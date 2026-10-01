@@ -70,20 +70,24 @@ body.touch #touchUI{display:block}
 #joy{position:fixed;left:18px;bottom:64px;width:124px;height:124px;border-radius:50%;background:rgba(40,60,110,.22);border:1px solid rgba(130,170,255,.35);z-index:18;touch-action:none}
 body.orbitMode #joy{display:none}
 #joyKnob{position:absolute;left:37px;top:37px;width:50px;height:50px;border-radius:50%;background:rgba(120,160,255,.45);border:1px solid rgba(160,190,255,.5)}
-#udBtns{position:fixed;right:18px;bottom:74px;display:flex;flex-direction:column;gap:12px;z-index:18}
+#udBtns{position:fixed;right:18px;bottom:74px;display:none;flex-direction:column;gap:12px;z-index:18}
+body.touch #udBtns{display:flex}
+body.touch.orbitMode #udBtns{display:none}
 #udBtns button{width:56px;height:56px;border-radius:50%;border:1px solid rgba(130,170,255,.4);background:rgba(40,60,110,.3);color:#cfe0ff;font-size:20px;touch-action:none}
 body.orbitMode #udBtns{display:none}
 @media (max-width:720px){
   #panel{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:44%;font-size:12px}
-  #panelToggle{top:10px;right:10px;bottom:auto}
+  #mtools{display:flex;flex-direction:column;align-items:flex-end;gap:10px;position:fixed;top:10px;right:10px;z-index:30}
+  #mtools>#panelToggle,#mtools>#langBtn,#mtools>#recFab,#mtools>#udBtns{position:static}
   #hud h1{font-size:16px}
   #hud p{font-size:11px}
   #hint{font-size:11px;bottom:8px;max-width:92vw;white-space:normal;text-align:center}
   #joy{bottom:auto;top:30%}
-  #udBtns{bottom:auto;top:30%}
+  #recDot{right:auto;left:16px;top:66px}
 }
-#langBtn{position:fixed;top:14px;right:14px;z-index:30;background:rgba(20,28,48,.85);color:#cfe0ff;border:1px solid rgba(120,160,255,.35);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
+#langBtn{position:fixed;left:16px;top:88px;z-index:30;background:rgba(20,28,48,.85);color:#cfe0ff;border:1px solid rgba(120,160,255,.35);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
 #langBtn:hover{background:rgba(40,56,96,.9)}
+#mtools{display:contents}
 </style>
 </head>
 <body>
@@ -93,8 +97,11 @@ body.orbitMode #udBtns{display:none}
   <p data-i18n="hudSub">黑洞 · 吸积盘 · 潮汐行星 · 星系合并</p>
 </div>
 <div id="hint">拖拽旋转视角 · WASD/QE 移动 · Shift 加速 · 滚轮缩放/调速 · 右侧面板可收起</div>
-<button id="panelToggle" data-i18n="panelToggle">控制面板</button>
+<div id="mtools"><button id="panelToggle" data-i18n="panelToggle">控制面板</button>
 <button id="langBtn">EN</button>
+<button id="recFab" data-i18n-title="recFabTitle" title="录制视频">●</button>
+<div id="udBtns"><button id="btnUp">▲</button><button id="btnDown">▼</button></div>
+</div>
 <div id="panel">
   <h2><span data-i18n="panelName">卡冈图雅</span> <span data-i18n="panelTag">Gargantua · 交互演示</span></h2>
 
@@ -191,13 +198,11 @@ body.orbitMode #udBtns{display:none}
 </div>
 <div id="touchUI">
   <div id="joy"><div id="joyKnob"></div></div>
-  <div id="udBtns"><button id="btnUp">▲</button><button id="btnDown">▼</button></div>
 </div>
 <div id="loading" data-i18n="loading">正在初始化时空…</div>
 <div id="err"></div>
 <div id="toast"></div>
 <div id="recDot"><i></i>REC <span id="recDotT">00:00</span></div>
-<button id="recFab" data-i18n-title="recFabTitle" title="录制视频">●</button>
 <script>
 "use strict";
 /* ============================================================
