@@ -82,39 +82,42 @@ body.orbitMode #udBtns{display:none}
   #joy{bottom:auto;top:30%}
   #udBtns{bottom:auto;top:30%}
 }
+#langBtn{position:fixed;top:14px;right:14px;z-index:30;background:rgba(20,28,48,.85);color:#cfe0ff;border:1px solid rgba(120,160,255,.35);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
+#langBtn:hover{background:rgba(40,56,96,.9)}
 </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
 <div id="hud">
-  <h1>卡冈图雅</h1>
-  <p>黑洞 · 吸积盘 · 潮汐行星 · 星系合并</p>
+  <h1 data-i18n="hudTitle">卡冈图雅</h1>
+  <p data-i18n="hudSub">黑洞 · 吸积盘 · 潮汐行星 · 星系合并</p>
 </div>
 <div id="hint">拖拽旋转视角 · WASD/QE 移动 · Shift 加速 · 滚轮缩放/调速 · 右侧面板可收起</div>
-<button id="panelToggle">控制面板</button>
+<button id="panelToggle" data-i18n="panelToggle">控制面板</button>
+<button id="langBtn">EN</button>
 <div id="panel">
-  <h2>卡冈图雅 <span> Gargantua · 交互演示</span></h2>
+  <h2><span data-i18n="panelName">卡冈图雅</span> <span data-i18n="panelTag">Gargantua · 交互演示</span></h2>
 
   <section>
-    <h3>视角</h3>
+    <h3 data-i18n="secCamera">视角</h3>
     <div class="row">
-      <button id="camFly" class="on">自由飞行</button>
-      <button id="camOrbit">环绕</button>
+      <button id="camFly" class="on" data-i18n="camFly">自由飞行</button>
+      <button id="camOrbit" data-i18n="camOrbit">环绕</button>
     </div>
     <div class="row">
-      <button data-preset="far">远眺黑洞</button>
-      <button data-preset="disk">吸积盘近轨</button>
-      <button data-preset="planet">米勒行星</button>
-      <button data-preset="deep">深空星系</button>
+      <button data-preset="far" data-i18n="presetFar">远眺黑洞</button>
+      <button data-preset="disk" data-i18n="presetDisk">吸积盘近轨</button>
+      <button data-preset="planet" data-i18n="presetPlanet">米勒行星</button>
+      <button data-preset="deep" data-i18n="presetDeep">深空星系</button>
     </div>
-    <label class="chk"><input type="checkbox" id="followPlanet"> 跟随米勒行星</label>
+    <label class="chk"><input type="checkbox" id="followPlanet"><span data-i18n="followPlanet">跟随米勒行星</span></label>
   </section>
 
   <section>
-    <h3>黑洞与吸积盘</h3>
-    <label class="chk"><input type="checkbox" id="diskOn" checked> 吸积盘（ISCO = 6M 为内缘）</label>
-    <label class="chk"><input type="checkbox" id="planetOn" checked> 米勒行星（潮汐星球）</label>
-    <div class="row"><span>时间流速</span>
+    <h3 data-i18n="secDisk">黑洞与吸积盘</h3>
+    <label class="chk"><input type="checkbox" id="diskOn" checked><span data-i18n="diskOn">吸积盘（内缘 = 自旋 ISCO）</span></label>
+    <label class="chk"><input type="checkbox" id="planetOn" checked><span data-i18n="planetOn">米勒行星（潮汐星球）</span></label>
+    <div class="row"><span data-i18n="timeWarp">时间流速</span>
       <select id="speed">
         <option value="0.25">0.25×</option>
         <option value="0.5">0.5×</option>
@@ -126,63 +129,63 @@ body.orbitMode #udBtns{display:none}
   </section>
 
   <section>
-    <h3>米勒行星 · 引力时间膨胀</h3>
-    <div class="kv"><span>膨胀因子 dτ/dt</span><b id="tdFactor">0.866</b></div>
-    <div class="kv"><span>飞船时钟</span><b id="clockShip">00:00:00</b></div>
-    <div class="kv"><span>行星表面时钟</span><b id="clockPlanet">00:00:00</b></div>
-    <p class="note">行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。</p>
+    <h3 data-i18n="secMiller">米勒行星 · 引力时间膨胀</h3>
+    <div class="kv"><span data-i18n="tdFactor">膨胀因子 dτ/dt</span><b id="tdFactor">0.866</b></div>
+    <div class="kv"><span data-i18n="clockShip">飞船时钟</span><b id="clockShip">00:00:00</b></div>
+    <div class="kv"><span data-i18n="clockPlanet">行星表面时钟</span><b id="clockPlanet">00:00:00</b></div>
+    <p class="note" data-i18n="noteMiller">行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。</p>
   </section>
 
   <section>
-    <h3>背景深空 · 银河系 × 仙女星系</h3>
+    <h3 data-i18n="secGalaxy">背景深空 · 银河系 × 仙女星系</h3>
     <div class="row">
-      <button id="scMerge" class="on">合并</button>
-      <button id="scFlyby">擦肩而过</button>
+      <button id="scMerge" class="on" data-i18n="scMerge">合并</button>
+      <button id="scFlyby" data-i18n="scFlyby">擦肩而过</button>
     </div>
     <div class="row">
       <button id="galPlay">暂停</button>
-      <button id="galRestart">重新开始</button>
+      <button id="galRestart" data-i18n="galRestart">重新开始</button>
     </div>
-    <label class="chk"><input type="checkbox" id="galLoop" checked> 循环演示（结束后停留 2 秒自动重播）</label>
+    <label class="chk"><input type="checkbox" id="galLoop" checked><span data-i18n="galLoop">循环演示（结束后停留 2 秒自动重播）</span></label>
     <div class="bar"><div id="galProg"></div></div>
-    <div class="kv"><span>演化状态</span><b id="galStatus">准备中</b></div>
-    <p class="note">限制性三体模型（Toomre 1972）：两个点质量 + 无质量试验粒子盘；「合并」场景含动力学摩擦，潮汐桥与潮汐尾自然形成，直至弛豫为椭圆星系或相互分离。</p>
+    <div class="kv"><span data-i18n="galStateLabel">演化状态</span><b id="galStatus" data-i18n="galStatusReady">准备中</b></div>
+    <p class="note" data-i18n="noteGalaxy">限制性三体模型（Toomre 1972）：两个点质量 + 无质量试验粒子盘；「合并」场景含动力学摩擦，潮汐桥与潮汐尾自然形成，直至弛豫为椭圆星系或相互分离。</p>
   </section>
 
   <section>
-    <h3>画质</h3>
-    <div class="row"><span>辉光强度</span>
+    <h3 data-i18n="secGfx">画质</h3>
+    <div class="row"><span data-i18n="glowLabel">辉光强度</span>
       <input type="range" id="glow" min="0" max="1.5" step="0.1" value="0.6" style="flex:1">
       <b id="glowVal" style="min-width:2em;text-align:right">0.6</b>
     </div>
-    <div class="row"><span>黑洞自旋 a*</span>
+    <div class="row"><span data-i18n="spinLabel">黑洞自旋 a*</span>
       <input type="range" id="spin" min="0" max="0.98" step="0.01" value="0" style="flex:1">
       <b id="spinVal" style="min-width:2.8em;text-align:right">0.00</b>
     </div>
-    <div class="row"><span>渲染分辨率</span>
+    <div class="row"><span data-i18n="qualityLabel">渲染分辨率</span>
       <select id="quality">
-        <option value="auto" selected>自动</option>
-        <option value="1">高</option>
-        <option value="0.65">中</option>
-        <option value="0.4">低</option>
+        <option value="auto" selected data-i18n="qAuto">自动</option>
+        <option value="1" data-i18n="qHigh">高</option>
+        <option value="0.65" data-i18n="qMed">中</option>
+        <option value="0.4" data-i18n="qLow">低</option>
       </select>
     </div>
     <div class="kv"><span>FPS</span><b id="fps">--</b></div>
-    <div class="row"><span>视频导出</span>
+    <div class="row"><span data-i18n="recLabel">视频导出</span>
       <button id="recBtn">● 录制</button>
     </div>
-    <p class="note">录制当前画面为视频文件（iPhone 上为 mp4，可直接分享）。录制只含 3D 画面，不含控制面板。</p>
+    <p class="note" data-i18n="noteRec">录制当前画面为视频文件（iPhone 上为 mp4，可直接分享）。录制只含 3D 画面，不含控制面板。</p>
   </section>
 
   <details>
-    <summary>物理说明</summary>
+    <summary data-i18n="physTitle">物理说明</summary>
     <ul>
-      <li><b>引力透镜</b>：每像素沿史瓦西零测地线积分（轨道平面约化 + RK4，手机 420 步 / PC 640 步），光子球 r=3M，阴影半径 3√3M 自然呈现。Kerr 度规光子积分为下一步里程碑，当前版本未做。</li>
-      <li><b>吸积盘</b>：内缘取自旋 ISCO（Bardeen 公式，a*=0 时为 6M → a*=0.98 时约 1.6M），Novikov-Thorne 温度分布随自旋重归一化；多普勒增亮与引力红移由 g 因子逐点计算，高阶像形成光子环；湍流为平流 churn（内快外慢）。</li>
-      <li><b>自适应管线</b>：PC 端渲染线性 HDR 到 RGBA16F 缓冲，经亮部提取 + 1/4 分辨率双向高斯泛光 + ACES/暗角/颗粒后期合成；手机端保持单 pass 直出（着色器内 ACES + 解析式辉光），零额外 FBO。两档由触屏检测 + EXT_color_buffer_float 可用性决定。</li>
-      <li><b>米勒行星</b>：12M 顺行圆轨道海洋行星，巨浪为 Gerstner 波叠加；行星本身也参与光线追踪，可被引力透镜成多重像。</li>
-      <li><b>背景星系</b>：光线逃逸后采样深空立方体贴图，合并中的星系同样被透镜扭曲，可在阴影边缘看到爱因斯坦环式的弧。</li>
-      <li><b>星系合并</b>：银河系与仙女星系以 1:1 质量比相遇，盘粒子只受两点质量引力支配，经典潮汐尾形态。</li>
+      <li data-i18n-html="phys1"><b>引力透镜</b>：每像素沿史瓦西零测地线积分（轨道平面约化 + RK4，手机 420 步 / PC 640 步），光子球 r=3M，阴影半径 3√3M 自然呈现。Kerr 度规光子积分为下一步里程碑，当前版本未做。</li>
+      <li data-i18n-html="phys2"><b>吸积盘</b>：内缘取自旋 ISCO（Bardeen 公式，a*=0 时为 6M → a*=0.98 时约 1.6M），Novikov-Thorne 温度分布随自旋重归一化；多普勒增亮与引力红移由 g 因子逐点计算，高阶像形成光子环；湍流为平流 churn（内快外慢）。</li>
+      <li data-i18n-html="phys3"><b>自适应管线</b>：PC 端渲染线性 HDR 到 RGBA16F 缓冲，经亮部提取 + 1/4 分辨率双向高斯泛光 + ACES/暗角/颗粒后期合成；手机端保持单 pass 直出（着色器内 ACES + 解析式辉光），零额外 FBO。两档由触屏检测 + EXT_color_buffer_float 可用性决定。</li>
+      <li data-i18n-html="phys4"><b>米勒行星</b>：12M 顺行圆轨道海洋行星，巨浪为 Gerstner 波叠加；行星本身也参与光线追踪，可被引力透镜成多重像。</li>
+      <li data-i18n-html="phys5"><b>背景星系</b>：光线逃逸后采样深空立方体贴图，合并中的星系同样被透镜扭曲，可在阴影边缘看到爱因斯坦环式的弧。</li>
+      <li data-i18n-html="phys6"><b>星系合并</b>：银河系与仙女星系以 1:1 质量比相遇，盘粒子只受两点质量引力支配，经典潮汐尾形态。</li>
     </ul>
   </details>
 </div>
@@ -190,11 +193,11 @@ body.orbitMode #udBtns{display:none}
   <div id="joy"><div id="joyKnob"></div></div>
   <div id="udBtns"><button id="btnUp">▲</button><button id="btnDown">▼</button></div>
 </div>
-<div id="loading">正在初始化时空…</div>
+<div id="loading" data-i18n="loading">正在初始化时空…</div>
 <div id="err"></div>
 <div id="toast"></div>
 <div id="recDot"><i></i>REC <span id="recDotT">00:00</span></div>
-<button id="recFab" title="录制视频">●</button>
+<button id="recFab" data-i18n-title="recFabTitle" title="录制视频">●</button>
 <script>
 "use strict";
 /* ============================================================
@@ -205,6 +208,140 @@ body.orbitMode #udBtns{display:none}
    - 背景深空：银河系×仙女星系合并的限制性三体模拟
    纯 WebGL2 实现，零外部依赖，单文件可离线运行。
    ============================================================ */
+
+
+/* ============================================================
+   界面语言 i18n：按浏览器语言决定默认（zh→简中，其他→英文），右上角可手动切换
+   ============================================================ */
+const T = {
+zh: {
+  pageTitle:"卡冈图雅 · 黑洞与潮汐行星",
+  hudTitle:"卡冈图雅", hudSub:"黑洞 · 吸积盘 · 潮汐行星 · 星系合并",
+  hint:"拖拽旋转视角 · WASD/QE 移动 · Shift 加速 · 滚轮缩放/调速 · 右侧面板可收起",
+  hintTouch:"单指拖拽旋转视角 · 双指开合缩放 · 左侧摇杆移动（飞行模式）",
+  panelToggle:"控制面板", panelName:"卡冈图雅", panelTag:"Gargantua · 交互演示",
+  secCamera:"视角", camFly:"自由飞行", camOrbit:"环绕",
+  presetFar:"远眺黑洞", presetDisk:"吸积盘近轨", presetPlanet:"米勒行星", presetDeep:"深空星系",
+  followPlanet:"跟随米勒行星",
+  secDisk:"黑洞与吸积盘", diskOn:"吸积盘（内缘 = 自旋 ISCO）", planetOn:"米勒行星（潮汐星球）",
+  timeWarp:"时间流速",
+  secMiller:"米勒行星 · 引力时间膨胀", tdFactor:"膨胀因子 dτ/dt",
+  clockShip:"飞船时钟", clockPlanet:"行星表面时钟",
+  noteMiller:"行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。",
+  secGalaxy:"背景深空 · 银河系 × 仙女星系", scMerge:"合并", scFlyby:"擦肩而过",
+  galPlay:"暂停", galPlayResume:"继续", galRestart:"重新开始",
+  galLoop:"循环演示（结束后停留 2 秒自动重播）",
+  galStateLabel:"演化状态", galStatusReady:"准备中",
+  noteGalaxy:"限制性三体模型（Toomre 1972）：两个点质量 + 无质量试验粒子盘；「合并」场景含动力学摩擦，潮汐桥与潮汐尾自然形成，直至弛豫为椭圆星系或相互分离。",
+  secGfx:"画质", glowLabel:"辉光强度", spinLabel:"黑洞自旋 a*", qualityLabel:"渲染分辨率",
+  qAuto:"自动", qHigh:"高", qMed:"中", qLow:"低",
+  recLabel:"视频导出", recStart:"● 录制", recStop:"■ 停止",
+  noteRec:"录制当前画面为视频文件（iPhone 上为 mp4，可直接分享）。录制只含 3D 画面，不含控制面板。",
+  physTitle:"物理说明",
+  phys1:"<b>引力透镜</b>：每像素沿史瓦西零测地线积分（轨道平面约化 + RK4，手机 420 步 / PC 640 步），光子球 r=3M，阴影半径 3√3M 自然呈现。Kerr 度规光子积分为下一步里程碑，当前版本未做。",
+  phys2:"<b>吸积盘</b>：内缘取自旋 ISCO（Bardeen 公式，a*=0 时为 6M → a*=0.98 时约 1.6M），Novikov-Thorne 温度分布随自旋重归一化；多普勒增亮与引力红移由 g 因子逐点计算，高阶像形成光子环；湍流为平流 churn（内快外慢）。",
+  phys3:"<b>自适应管线</b>：PC 端渲染线性 HDR 到 RGBA16F 缓冲，经亮部提取 + 1/4 分辨率双向高斯泛光 + ACES/暗角/颗粒后期合成；手机端保持单 pass 直出（着色器内 ACES + 解析式辉光），零额外 FBO。两档由触屏检测 + EXT_color_buffer_float 可用性决定。",
+  phys4:"<b>米勒行星</b>：12M 顺行圆轨道海洋行星，巨浪为 Gerstner 波叠加；行星本身也参与光线追踪，可被引力透镜成多重像。",
+  phys5:"<b>背景星系</b>：光线逃逸后采样深空立方体贴图，合并中的星系同样被透镜扭曲，可在阴影边缘看到爱因斯坦环式的弧。",
+  phys6:"<b>星系合并</b>：银河系与仙女星系以 1:1 质量比相遇，盘粒子只受两点质量引力支配，经典潮汐尾形态。",
+  loading:"正在初始化时空…", recFabTitle:"录制视频",
+  tierPC:"PC·HDR", tierMobile:"手机·直出",
+  finalState:"终态展示 · ", replayIn:"s 后重播",
+  gal_approach:"两星系接近中", gal_first:"首次交会 · 潮汐桥形成",
+  gal_after:"交会后 · 潮汐尾展开中", gal_merging:"双核合并中 · 潮汐尾回落",
+  gal_relaxed:"已稳定 · 弛豫为椭圆星系",
+  gal_flyby_close:"近距离交会 · 潮汐扰动", gal_separated:"已分离 · 各自远去",
+  errNoWebGL:"需要支持 WebGL2 的浏览器才能运行此演示。<br>请使用最新版 Safari / Chrome / Edge / Firefox 打开。<br>若在 App 内置浏览器中打开黑屏，请点分享 →「在 Safari 中打开」。",
+  errBoot:"启动失败：", errBootHint:"<br>可尝试：用 Safari 直接打开本页面，或把页面另存后用电脑浏览器打开。",
+  errShader:"shader 编译失败: ",
+  errLink:"program 链接失败: ",
+  errUnknown:"未知错误",
+  toastNoRec:"当前浏览器不支持页内录制，请用 Safari 打开，或用系统录屏（控制中心点●）",
+  toastNoEnc:"当前浏览器没有可用的视频编码器",
+  toastNoCap:"无法捕获画面：", toastRecFail:"录制启动失败：",
+  toastEmpty:"没有录到内容", toastSaved:"视频已导出："
+},
+en: {
+  pageTitle:"Gargantua · Black Hole & Tidal Planet",
+  hudTitle:"Gargantua", hudSub:"Black Hole · Accretion Disk · Tidal Planet · Galaxy Merger",
+  hint:"Drag to orbit · WASD/QE to move · Shift to boost · Scroll to zoom / adjust speed · Panel collapsible",
+  hintTouch:"One finger to orbit · Pinch to zoom · Left joystick to move (fly mode)",
+  panelToggle:"Controls", panelName:"Gargantua", panelTag:"Interactive Demo",
+  secCamera:"Camera", camFly:"Free Fly", camOrbit:"Orbit",
+  presetFar:"Distant View", presetDisk:"Disk Flyby", presetPlanet:"Miller's Planet", presetDeep:"Deep Space",
+  followPlanet:"Follow Miller's planet",
+  secDisk:"Black Hole & Disk", diskOn:"Accretion disk (inner edge = spin ISCO)", planetOn:"Miller's planet (tidal world)",
+  timeWarp:"Time warp",
+  secMiller:"Miller's Planet · Time Dilation", tdFactor:"Dilation factor dτ/dt",
+  clockShip:"Ship clock", clockPlanet:"Planet surface clock",
+  noteMiller:"The planet is on a 12M prograde circular orbit, tidally locked. The film's “1 hour = 7 years” needs a near-extremal Kerr black hole; this demo solves the Schwarzschild metric exactly, so the dilation is milder.",
+  secGalaxy:"Deep Space · Milky Way × Andromeda", scMerge:"Merger", scFlyby:"Flyby",
+  galPlay:"Pause", galPlayResume:"Resume", galRestart:"Restart",
+  galLoop:"Loop demo (auto-replay 2 s after finishing)",
+  galStateLabel:"Status", galStatusReady:"Ready",
+  noteGalaxy:"Restricted three-body model (Toomre 1972): two point masses + massless test-particle disks. The merger scenario includes dynamical friction; tidal bridges and tails form naturally until relaxation into an elliptical galaxy or separation.",
+  secGfx:"Graphics", glowLabel:"Glow", spinLabel:"Black hole spin a*", qualityLabel:"Resolution",
+  qAuto:"Auto", qHigh:"High", qMed:"Medium", qLow:"Low",
+  recLabel:"Video export", recStart:"● Record", recStop:"■ Stop",
+  noteRec:"Records the current 3D view to a video file (mp4 on iPhone, easy to share). The control panel is not recorded.",
+  physTitle:"Physics notes",
+  phys1:"<b>Lensing</b>: every pixel integrates a Schwarzschild null geodesic (orbit-plane reduction + RK4, 420 steps on mobile / 640 on PC); the photon sphere at r=3M and the 3√3M shadow radius emerge naturally. Kerr-metric photon integration is a future milestone, not in this version.",
+  phys2:"<b>Disk</b>: inner edge at the spin ISCO (Bardeen formula, 6M at a*=0 → ~1.6M at a*=0.98), Novikov–Thorne temperature profile renormalized with spin; Doppler boosting and gravitational redshift from the per-pixel g-factor, higher-order images forming the photon ring; turbulence is advected churn (faster inside).",
+  phys3:"<b>Adaptive pipeline</b>: on PC the scene renders linear HDR into an RGBA16F buffer, then bright-pass + quarter-res separable Gaussian bloom + ACES/vignette/grain composite; on mobile it stays single-pass direct (in-shader ACES + analytic glow) with zero extra FBOs. Tier chosen by touch detection + EXT_color_buffer_float availability.",
+  phys4:"<b>Miller's planet</b>: an ocean world on a 12M prograde circular orbit; giant waves are stacked Gerstner waves. The planet itself joins the ray tracing and can be lensed into multiple images.",
+  phys5:"<b>Background galaxies</b>: escaped rays sample the deep-space cubemap; the merging galaxies are lensed too — look for Einstein-ring-like arcs at the shadow's edge.",
+  phys6:"<b>Galaxy merger</b>: Milky Way meets Andromeda at a 1:1 mass ratio; disk particles feel only the two point masses, producing the classic tidal-tail morphology.",
+  loading:"Initializing spacetime…", recFabTitle:"Record video",
+  tierPC:"PC · HDR", tierMobile:"Mobile · Direct",
+  finalState:"Final state · replay in ", replayIn:"s",
+  gal_approach:"The two galaxies are approaching", gal_first:"First encounter · tidal bridge forming",
+  gal_after:"After encounter · tidal tails unfolding", gal_merging:"Nuclei merging · tails falling back",
+  gal_relaxed:"Settled · relaxed into an elliptical",
+  gal_flyby_close:"Close encounter · tidal disturbance", gal_separated:"Separated · drifting apart",
+  errNoWebGL:"This demo needs a browser with WebGL2 support.<br>Please use the latest Safari / Chrome / Edge / Firefox.<br>If you get a black screen in an in-app browser, tap Share → “Open in Safari”.",
+  errBoot:"Startup failed: ", errBootHint:"<br>Try: open this page directly in Safari, or save it and open with a desktop browser.",
+  errShader:"shader compile failed: ",
+  errLink:"program link failed: ",
+  errUnknown:"unknown error",
+  toastNoRec:"In-page recording is not supported in this browser. Open in Safari, or use system screen recording (● in Control Center).",
+  toastNoEnc:"No video encoder available in this browser.",
+  toastNoCap:"Could not capture the canvas: ", toastRecFail:"Recording failed to start: ",
+  toastEmpty:"Nothing was recorded.", toastSaved:"Video exported: "
+}
+};
+let lang = "zh";
+try{
+  const saved = localStorage.getItem("gargantua-lang");
+  if(saved==="zh"||saved==="en") lang = saved;
+  else lang = ((navigator.language||"zh").toLowerCase().startsWith("zh")) ? "zh" : "en";
+}catch(_){
+  lang = ((navigator.language||"zh").toLowerCase().startsWith("zh")) ? "zh" : "en";
+}
+function t(k){
+  const d = T[lang] || T.zh;
+  return (d[k]!==undefined) ? d[k] : ((T.zh[k]!==undefined) ? T.zh[k] : k);
+}
+function refreshButtons(){
+  const gp = document.getElementById("galPlay");
+  if(gp) gp.textContent = galPlaying ? t("galPlay") : t("galPlayResume");
+  const on = !!rec;
+  const rb = document.getElementById("recBtn");
+  if(rb) rb.textContent = on ? t("recStop") : t("recStart");
+  const fab = document.getElementById("recFab");
+  if(fab) fab.textContent = on ? "■" : "●";
+}
+function applyLang(){
+  document.documentElement.lang = (lang==="zh") ? "zh-CN" : "en";
+  document.title = t("pageTitle");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t(el.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{ el.innerHTML = t(el.getAttribute("data-i18n-html")); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el=>{ el.title = t(el.getAttribute("data-i18n-title")); });
+  const hintEl = document.getElementById("hint");
+  if(hintEl) hintEl.textContent = IS_TOUCH ? t("hintTouch") : t("hint");
+  const lb = document.getElementById("langBtn");
+  if(lb) lb.textContent = (lang==="zh") ? "EN" : "中文";
+  refreshButtons();
+}
 
 /* ---------------- 基础数学 ---------------- */
 function mulberry32(seed){
@@ -421,15 +558,15 @@ class GalaxySim {
   }
   status(){
     if(this.scenario==='merge'){
-      if(this.done) return '已稳定 · 弛豫为椭圆星系';
-      if(this.merged) return '双核合并中 · 潮汐尾回落';
-      if(this.periDone) return '交会后 · 潮汐尾展开中';
-      if(this.t<20) return '两星系接近中';
-      return '首次交会 · 潮汐桥形成';
+      if(this.done) return 'gal_relaxed';
+      if(this.merged) return 'gal_merging';
+      if(this.periDone) return 'gal_after';
+      if(this.t<20) return 'gal_approach';
+      return 'gal_first';
     }
-    if(this.done) return '已分离 · 各自远去';
-    if(this.periDone) return '近距离交会 · 潮汐扰动';
-    return '两星系接近中';
+    if(this.done) return 'gal_separated';
+    if(this.periDone) return 'gal_flyby_close';
+    return 'gal_approach';
   }
   progress(){ return Math.min(this.t/this.T_END, 1); }
 }
@@ -442,7 +579,7 @@ const errBox = document.getElementById('err');
 const gl = canvas.getContext('webgl2', {antialias:false, alpha:false, depth:false, stencil:false});
 if(!gl){
   errBox.style.display='flex';
-  errBox.innerHTML='需要支持 WebGL2 的浏览器才能运行此演示。<br>请使用最新版 Safari / Chrome / Edge / Firefox 打开。<br>若在 App 内置浏览器中打开黑屏，请点分享 →「在 Safari 中打开」。';
+  errBox.innerHTML=t('errNoWebGL');
   throw new Error('no webgl2');
 }
 // 全局错误上报：任何初始化/运行异常都显示原因，不再静默黑屏
@@ -453,8 +590,8 @@ window.addEventListener('error', e=>{
     if(box&&box.style.display!=='flex'){
       if(load) load.style.display='none';
       box.style.display='flex';
-      const msg=String((e&&(e.message||(e.error&&e.error.message)))||'未知错误');
-      box.innerHTML='启动失败：'+msg.slice(0,220)+'<br>可尝试：用 Safari 直接打开本页面，或把页面另存后用电脑浏览器打开。';
+      const msg=String((e&&(e.message||(e.error&&e.error.message)))||t('errUnknown'));
+      box.innerHTML=t('errBoot')+msg.slice(0,220)+t('errBootHint');
     }
   }catch(_){}
 });
@@ -465,7 +602,7 @@ function compileShader(type, src){
   if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
     lastGLLog=String(gl.getShaderInfoLog(s)||'').slice(0,300);
     console.error(lastGLLog);
-    throw new Error('shader 编译失败: '+lastGLLog.slice(0,160));
+    throw new Error(t('errShader')+lastGLLog.slice(0,160));
   }
   return s;
 }
@@ -477,7 +614,7 @@ function makeProgram(vsSrc, fsSrc){
   if(!gl.getProgramParameter(p, gl.LINK_STATUS)){
     lastGLLog=String(gl.getProgramInfoLog(p)||'').slice(0,300);
     console.error(lastGLLog);
-    throw new Error('program 链接失败: '+lastGLLog.slice(0,160));
+    throw new Error(t('errLink')+lastGLLog.slice(0,160));
   }
   return p;
 }
@@ -1343,7 +1480,7 @@ canvas.addEventListener('wheel', e=>{
 const isTouch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
 if(isTouch){
   document.body.classList.add('touch');
-  document.getElementById('hint').textContent='单指拖拽旋转视角 · 双指开合缩放 · 左侧摇杆移动（飞行模式）';
+  document.getElementById('hint').textContent=t('hintTouch');
 }
 const joy={fx:0, fz:0, id:null};
 let btnUpFlag=false, btnDownFlag=false;
@@ -1450,7 +1587,7 @@ $('panelToggle').onclick=()=>{ $('panel').classList.toggle('hidden'); };
 function rebuildGalaxy(scenario){
   if(BG.galVAO){ gl.deleteVertexArray(BG.galVAO.vao); gl.deleteBuffer(BG.galVAO.buf); }
   sim=new GalaxySim(scenario);
-  galAcc=0; galPlaying=true; $('galPlay').textContent='暂停';
+  galAcc=0; galPlaying=true; refreshButtons();
   bgBindGalaxySim(sim);
   bgRenderCube();
   $('scMerge').classList.toggle('on', scenario==='merge');
@@ -1460,7 +1597,7 @@ $('scMerge').onclick=()=>rebuildGalaxy('merge');
 $('scFlyby').onclick=()=>rebuildGalaxy('flyby');
 $('galPlay').onclick=()=>{
   galPlaying=!galPlaying;
-  $('galPlay').textContent=galPlaying?'暂停':'继续';
+  refreshButtons();
 };
 $('galRestart').onclick=()=>rebuildGalaxy(sim?sim.scenario:'merge');
 let galLoop=true, simDoneAt=0;
@@ -1488,7 +1625,7 @@ function fmtDur(s){
   return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 }
 function recUI(on){
-  $('recBtn').textContent=on?'■ 停止':'● 录制';
+  $('recBtn').textContent=on?t('recStop'):t('recStart');
   $('recBtn').classList.toggle('on', on);
   $('recFab').textContent=on?'■':'●';
   $('recFab').classList.toggle('on', on);
@@ -1496,19 +1633,19 @@ function recUI(on){
 }
 function toggleRec(){
   if(rec){ stopRec(); return; }
-  if(!REC_OK){ toast('当前浏览器不支持页内录制，请用 Safari 打开，或用系统录屏（控制中心点●）'); return; }
+  if(!REC_OK){ toast(t('toastNoRec')); return; }
   const mime=pickMime();
-  if(!mime){ toast('当前浏览器没有可用的视频编码器'); return; }
+  if(!mime){ toast(t('toastNoEnc')); return; }
   let stream;
   try{ stream=canvas.captureStream(30); }
-  catch(e){ toast('无法捕获画面：'+e.message); return; }
+  catch(e){ toast(t('toastNoCap')+e.message); return; }
   try{
     rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:10000000});
-  }catch(e){ toast('录制启动失败：'+e.message); rec=null; return; }
+  }catch(e){ toast(t('toastRecFail')+e.message); rec=null; return; }
   recChunks=[]; recMime=mime; recT0=performance.now();
   rec.ondataavailable=e=>{ if(e.data && e.data.size) recChunks.push(e.data); };
   rec.onstop=saveRec;
-  try{ rec.start(1000); }catch(e){ toast('录制启动失败：'+e.message); rec=null; return; }
+  try{ rec.start(1000); }catch(e){ toast(t('toastRecFail')+e.message); rec=null; return; }
   recUI(true);
   recTick=setInterval(()=>{ $('recDotT').textContent=fmtDur((performance.now()-recT0)/1000); },500);
 }
@@ -1522,7 +1659,7 @@ function saveRec(){
   clearInterval(recTick); recTick=null;
   const mime=recMime, chunks=recChunks;
   rec=null; recUI(false);
-  if(!chunks.length){ toast('没有录到内容'); return; }
+  if(!chunks.length){ toast(t('toastEmpty')); return; }
   const ext=mime.indexOf('mp4')>=0?'mp4':'webm';
   const blob=new Blob(chunks,{type:mime.split(';')[0]});
   const url=URL.createObjectURL(blob);
@@ -1531,7 +1668,7 @@ function saveRec(){
   a.download='gargantua-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.'+ext;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 30000);
-  toast('视频已导出：'+a.download);
+  toast(t('toastSaved')+a.download);
 };
 $('tdFactor').textContent=TD_FACTOR.toFixed(3);
 
@@ -1606,17 +1743,17 @@ function frame(now){
   // HUD（节流）
   if(now-lastHud>250){
     lastHud=now;
-    $('fps').textContent=Math.round(fpsEMA)+' · '+Math.round(renderScale*100)+'%' +(HDR_OK?' · PC·HDR':' · 手机·直出');
+    $('fps').textContent=Math.round(fpsEMA)+' · '+Math.round(renderScale*100)+'%' +(' · '+(HDR_OK?t('tierPC'):t('tierMobile')));
     $('clockShip').textContent=fmtClock(shipT);
     $('clockPlanet').textContent=fmtClock(planetT);
     if(sim){
       let st=sim.status();
       if(sim.done && galLoop && galPlaying && simDoneAt)
-        st='终态展示 · '+Math.max(1,Math.ceil((2000-(now-simDoneAt))/1000))+'s 后重播';
-      $('galStatus').textContent=st;
+        st=t('finalState')+Math.max(1,Math.ceil((2000-(now-simDoneAt))/1000))+t('replayIn');
+      $('galStatus').textContent=t(st);
       $('galProg').style.width=(sim.progress()*100).toFixed(1)+'%';
       // 演完自动暂停；但循环演示开着时不断播，交给循环分支重播
-      if(sim.done && galPlaying && !galLoop){ galPlaying=false; $('galPlay').textContent='继续'; }
+      if(sim.done && galPlaying && !galLoop){ galPlaying=false; refreshButtons(); }
     }
   }
 }
@@ -1628,6 +1765,12 @@ ppInit();        // 桌面 HDR 后期（手机端为空操作）
 updateSpin();    // 初始化自旋 ISCO
 rebuildGalaxy('merge');
 setCamButtons();
+document.getElementById('langBtn').onclick=()=>{
+  lang = (lang==='zh') ? 'en' : 'zh';
+  try{ localStorage.setItem('gargantua-lang', lang); }catch(_){}
+  applyLang();
+};
+applyLang();
 if(window.innerWidth<720) $('panel').classList.add('hidden');  // 手机默认收起面板，给手势留空间
 resize();
 document.getElementById('loading').style.display='none';

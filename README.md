@@ -4,7 +4,7 @@
 
 单文件、零外部依赖的 WebGL2 实时黑洞演示。灵感来自《星际穿越》中的卡冈图雅（视觉风格参考，非官方复刻）。
 
-**在线演示 / Live demo**：https://ragntec.github.io/Gargantua_Demo/
+**在线演示 / Live demo**：https://ragntec.github.io/GargantuaDemo/
 
 ## 特性
 
@@ -14,6 +14,7 @@
 - **银河系 × 仙女星系**：棒旋星系 vs 经典旋涡星系（尘埃带、核球、三层核辉光），限制性三体背景模拟，合并 / 擦肩两种场景，支持循环演示
 - **手机适配**：单指旋转、双指缩放、虚拟摇杆、小屏底部控制抽屉
 - **录制**：`canvas.captureStream` + `MediaRecorder`，只录制 WebGL 画布（不含 UI），悬浮 REC 按钮
+- **中英双语 / Bilingual**：按浏览器显示语言自动默认简中或英文，右上角 EN/中文按钮可手动切换（选择会被记住）
 - **渲染路径**：自适应双档。手机端单 pass 直出（着色器内 ACES + 伽马 → RGBA8），无多 pass 后期——这是为了 iPhone WebGL 兼容性刻意保留的设计；PC 端（非触屏且支持 `EXT_color_buffer_float`）渲染线性 HDR 到 RGBA16F 缓冲，经亮部提取 + 双向高斯泛光 + ACES/暗角/颗粒后期合成。改动后期管线时务必保证手机档不受影响
 
 ## 本地运行
@@ -29,7 +30,7 @@ python3 -m http.server 8000
 
 ## 代码结构
 
-整个项目就是一个 `index.html`（约 64KB），有意保持单文件、零依赖，方便直接部署到任何静态托管：
+整个项目就是一个 `index.html`（约 86KB），有意保持单文件、零依赖，方便直接部署到任何静态托管：
 
 | 部分 | 说明 |
 | --- | --- |
