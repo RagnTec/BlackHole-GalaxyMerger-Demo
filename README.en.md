@@ -12,8 +12,11 @@
 - **Accretion disk**: spin-dependent ISCO inner edge (Bardeen), Novikov–Thorne temperature profile, Doppler beaming and gravitational redshift
 - **Galaxy merger & flyby**: Milky Way (barred spiral) × Andromeda (spiral) restricted three-body simulation with merger and flyby scenarios; tidal bridges and tails emerge naturally
 - **Miller's planet**: giant waves, tidal locking, time-dilation readout
-- **Interstellar rogue planet**: adjustable impact parameter (4–24M), full evolution: flyby / capture & inspiral / tidal disruption at 7M Roche limit (shatters into 140-particle debris stream) / plunge, high-visibility cyan-glow rendering
-- **Continuous galaxy collision parameter**: 0–100 slider seamlessly blends head-on / off-center merger / close & distant flybys
+- **Interstellar rogue planet**: adjustable impact parameter (4–24M), full evolution: flyby / capture & inspiral / tidal disruption at 7M Roche limit (shatters into 140-particle debris stream) / plunge, high-visibility cyan-glow rendering; **auto-spawn mode**: random impact parameter & approach direction, one at a time, next spawns 10s after the previous ends (old planet fades out smoothly), manual launch overrides anytime
+- **Continuous galaxy collision parameter**: 0–100 slider seamlessly blends head-on / off-center merger / close & distant flybys; **manual evolution**: ~15s main evolution, then physics continues to a stable end state (merger relaxation / separation) with no auto-replay — restart manually
+- **Immersive mode**: one-click hide all UI (pulsing 👁 at bottom-right to restore)
+- **Starfield controls**: background star density (10–100%) & brightness (0–2×), galaxies unaffected
+- **Film-accurate time dilation**: Miller's planet strictly follows *Interstellar* — 1 hour = 7 years (dτ/dt = 1/61,320)
 - **Display filters**: accretion disk, Miller's planet, rogue planet, Milky Way, Andromeda, background stars can be toggled independently
 - **Mobile ready**: one-finger rotate, pinch zoom, virtual joystick, bottom control drawer on small screens
 - **Bilingual UI**: auto-detects browser language, manual toggle at top-right (choice is remembered)
