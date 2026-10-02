@@ -52,26 +52,12 @@
     border:1px solid rgba(130,170,255,.35);color:#e6efff;padding:10px 16px;border-radius:10px;
     font-size:13px;display:none;z-index:70;max-width:84vw;text-align:center;line-height:1.6;}
   /* 星际行星跟踪标记：脉冲圆环 + 名称标签，跟随行星投影位置 */
-  #rogueMarker{position:fixed;left:0;top:0;z-index:16;pointer-events:none;display:none;
-    transform:translate(-50%,-50%);text-align:center;}
-  #rogueMarker::before{content:"";display:block;width:52px;height:52px;margin:0 auto 3px;
-    border:2px solid rgba(130,225,255,.95);border-radius:50%;
-    box-shadow:0 0 10px rgba(130,225,255,.55),inset 0 0 8px rgba(130,225,255,.3);
-    animation:roguePing 1.25s ease-out infinite;}
-  #rogueMarker span{font-size:11px;color:#cfeeff;background:rgba(8,18,36,.72);
-    padding:2px 9px;border-radius:9px;white-space:nowrap;border:1px solid rgba(130,225,255,.35);}
-  @keyframes roguePing{0%{transform:scale(.5);opacity:1;}100%{transform:scale(1.3);opacity:0;}}
-  /* 米勒行星标签：金色静态细环 + 名称，用于和星际行星区分 */
-  #millerMarker{position:fixed;left:0;top:0;z-index:16;pointer-events:none;display:none;
-    transform:translate(-50%,-50%);text-align:center;}
-  #millerMarker::before{content:"";display:block;width:34px;height:34px;margin:0 auto 3px;
-    border:1.5px solid rgba(255,205,130,.85);border-radius:50%;
-    box-shadow:0 0 8px rgba(255,190,110,.4);}
-  #millerMarker span{font-size:11px;color:#ffe3b8;background:rgba(36,22,8,.72);
-    padding:2px 9px;border-radius:9px;white-space:nowrap;border:1px solid rgba(255,205,130,.35);}
-  /* 跟随标注的状态行（行星状态 / 星系阶段） */
-  #rogueMarker .mstat{display:block;font-size:10px;color:#9fd8f5;background:rgba(8,18,36,.62);
-    padding:1px 7px;border-radius:7px;white-space:nowrap;margin-top:2px;}
+  /* 悬浮窗拆分（2026-10-02）：视角/播放/星体信息已移到悬浮窗，面板只保留系统设置 */
+#panel section[data-sec="camera"],
+#panel section[data-sec="disk"],
+#panel section[data-sec="miller"],
+#panel section[data-sec="rogue"],
+#panel section[data-sec="galaxy"]{display:none;}
   .galMarker{position:fixed;left:0;top:0;z-index:15;pointer-events:none;display:none;
     transform:translate(-50%,-50%);text-align:center;}
   .galMarker::before{content:"";display:block;width:30px;height:30px;margin:0 auto 3px;
@@ -95,6 +81,31 @@ body.touch #udBtns{display:flex}
 body.touch.orbitMode #udBtns{display:none}
 #udBtns button{width:56px;height:56px;border-radius:50%;border:1px solid rgba(130,170,255,.4);background:rgba(40,60,110,.3);color:#cfe0ff;font-size:20px;touch-action:none}
 body.orbitMode #udBtns{display:none}
+/* 悬浮信息窗：视角 / 播放 / 星际行星 / 双星系 */
+.floatWin{position:fixed;z-index:14;background:rgba(9,13,24,.82);border:1px solid rgba(120,160,255,.20);
+  border-radius:12px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,.5);
+  font-size:12px;color:#c6d6f5;min-width:180px;max-width:260px;}
+.floatWin .fwHead{display:flex;justify-content:space-between;align-items:center;
+  padding:7px 10px;cursor:pointer;user-select:none;border-bottom:1px solid rgba(120,160,255,.12);}
+.floatWin .fwHead b{font-size:12px;letter-spacing:1px;color:#f0f5ff;font-weight:600;}
+.floatWin .fwHead .fwMin{background:none;border:none;color:#8ea3c8;font-size:14px;cursor:pointer;padding:0 2px;line-height:1;}
+.floatWin .fwHead .fwMin:hover{color:#fff;}
+.floatWin .fwBody{padding:8px 10px;}
+.floatWin.min .fwBody{display:none;}
+.floatWin.min .fwHead{border-bottom:none;}
+#floatViewPlay{top:64px;left:12px;}
+#floatRogue{bottom:12px;left:12px;border-color:rgba(130,225,255,.30);}
+#floatRogue .fwHead b{color:#cfeeff;}
+#floatGalaxy{bottom:12px;right:12px;}
+#floatMiller{top:64px;right:12px;border-color:rgba(255,205,130,.30);}
+#floatMiller .fwHead b{color:#ffe3b8;}
+@media (max-width:720px), (pointer:coarse){
+  .floatWin{font-size:11px;min-width:150px;max-width:200px;}
+  #floatViewPlay{top:56px;left:8px;}
+  #floatRogue{bottom:8px;left:8px;}
+  #floatGalaxy{bottom:8px;right:8px;}
+  #floatMiller{top:56px;right:8px;}
+}
 #mtools{display:contents}
 @media (max-width:720px), (pointer:coarse){
   #panel{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:44%;font-size:12px}
@@ -124,7 +135,7 @@ body.orbitMode #udBtns{display:none}
 <div id="panel">
   <h2><span data-i18n="panelName">卡冈图雅</span> <span data-i18n="panelTag">Gargantua · 交互演示</span></h2>
 
-  <section>
+  <section data-sec="camera">
     <h3 data-i18n="secCamera">视角</h3>
     <div class="row">
       <button id="camFly" class="on" data-i18n="camFly">自由飞行</button>
@@ -139,7 +150,7 @@ body.orbitMode #udBtns{display:none}
     <label class="chk"><input type="checkbox" id="followPlanet"><span data-i18n="followPlanet">跟随米勒行星</span></label>
   </section>
 
-  <section>
+  <section data-sec="disk">
     <h3 data-i18n="secDisk">黑洞与吸积盘</h3>
     <div class="row"><span data-i18n="timeWarp">时间流速</span>
       <select id="speed">
@@ -152,7 +163,7 @@ body.orbitMode #udBtns{display:none}
     </div>
   </section>
 
-  <section>
+  <section data-sec="miller">
     <h3 data-i18n="secMiller">米勒行星 · 引力时间膨胀</h3>
     <div class="kv"><span data-i18n="tdFactor">膨胀因子 dτ/dt</span><b id="tdFactor">0.866</b></div>
     <div class="kv"><span data-i18n="clockShip">飞船时钟</span><b id="clockShip">00:00:00</b></div>
@@ -160,7 +171,7 @@ body.orbitMode #udBtns{display:none}
     <p class="note" data-i18n="noteMiller">行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。</p>
   </section>
 
-  <section>
+  <section data-sec="rogue">
     <h3 data-i18n="secRogue">星际行星 · 黑洞捕获演示</h3>
     <div class="row"><span data-i18n="rogueB">瞄准距离 b</span>
       <input type="range" id="rogueB" min="4" max="24" step="0.5" value="16" style="flex:1">
@@ -188,7 +199,7 @@ body.orbitMode #udBtns{display:none}
     <p class="note" data-i18n="noteVis">黑洞阴影是时空本身，无法关闭；全部取消勾选即为「只看黑洞」。可多选自由组合。</p>
   </section>
 
-  <section>
+  <section data-sec="galaxy">
     <h3 data-i18n="secGalaxy">背景深空 · 银河系 × 仙女星系</h3>
     <div class="row"><span data-i18n="galImpact">碰撞参数</span>
       <input type="range" id="galImpact" min="0" max="100" step="1" value="50" style="flex:1">
@@ -239,8 +250,74 @@ body.orbitMode #udBtns{display:none}
     </ul>
   </details>
 </div>
-<div id="rogueMarker"><span class="mname" data-i18n="rogueTag">星际行星</span><span class="mstat" id="rogueMarkerStat">--</span></div>
-<div id="millerMarker"><span data-i18n="millerTag">米勒行星</span></div>
+<!-- 悬浮窗：视角+播放（二合一） / 星际行星 / 双星系 / 米勒行星 -->
+<div class="floatWin" id="floatViewPlay">
+  <div class="fwHead"><b data-i18n="secViewPlay">视角 · 播放</b><button class="fwMin" data-fw="floatViewPlay">−</button></div>
+  <div class="fwBody">
+    <div class="row"><span data-i18n="camMode">模式</span>
+      <select id="camModeF" style="flex:1">
+        <option value="fly" data-i18n="camFly">自由飞行</option>
+        <option value="orbit" data-i18n="camOrbit">环绕</option>
+      </select>
+    </div>
+    <div class="row"><span data-i18n="camPreset">机位</span>
+      <select id="camPresetF" style="flex:1">
+        <option value="" data-i18n="presetChoose">选择机位…</option>
+        <option value="far" data-i18n="presetFar">远眺黑洞</option>
+        <option value="disk" data-i18n="presetDisk">吸积盘近轨</option>
+        <option value="planet" data-i18n="presetPlanet">米勒行星</option>
+        <option value="deep" data-i18n="presetDeep">深空星系</option>
+      </select>
+    </div>
+    <div class="row"><span data-i18n="timeWarp">时间流速</span>
+      <select id="speedF" style="flex:1">
+        <option value="0.25">0.25×</option>
+        <option value="0.5">0.5×</option>
+        <option value="1">1×</option>
+        <option value="2" selected>2×</option>
+        <option value="4">4×</option>
+      </select>
+    </div>
+    <label class="chk"><input type="checkbox" id="followPlanetF"><span data-i18n="followPlanet">跟随米勒行星</span></label>
+  </div>
+</div>
+<div class="floatWin" id="floatRogue">
+  <div class="fwHead"><b data-i18n="rogueTag">星际行星</b><button class="fwMin" data-fw="floatRogue">−</button></div>
+  <div class="fwBody">
+    <div class="kv"><span data-i18n="rogueState">状态</span><b id="rogueStatusF">--</b></div>
+    <div class="kv"><span data-i18n="rogueDist">距黑洞</span><b id="rogueDistF">--</b></div>
+    <div class="row"><span data-i18n="rogueB">瞄准距离 b</span>
+      <input type="range" id="rogueBF" min="4" max="24" step="0.5" value="16" style="flex:1">
+      <b id="rogueBValF" style="min-width:3.5em;text-align:right">16M</b>
+    </div>
+    <div class="row"><button id="rogueLaunchF" data-i18n="rogueLaunch">重新发射</button></div>
+  </div>
+</div>
+<div class="floatWin" id="floatGalaxy">
+  <div class="fwHead"><b data-i18n="secGalaxyShort">双星系</b><button class="fwMin" data-fw="floatGalaxy">−</button></div>
+  <div class="fwBody">
+    <div class="kv"><span data-i18n="galStateLabel">演化状态</span><b id="galStatusF">--</b></div>
+    <div class="bar"><div id="galProgF"></div></div>
+    <div class="row"><span data-i18n="galImpact">碰撞参数</span>
+      <input type="range" id="galImpactF" min="0" max="100" step="1" value="50" style="flex:1">
+      <b id="galImpactValF" style="min-width:3em;text-align:right">--</b>
+    </div>
+    <div class="row">
+      <button id="galPlayF">暂停</button>
+      <button id="galRestartF" data-i18n="galRestart">重新开始</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="galLoopF" checked><span data-i18n="galLoop">循环演示</span></label>
+  </div>
+</div>
+<div class="floatWin" id="floatMiller">
+  <div class="fwHead"><b data-i18n="millerTag">米勒行星</b><button class="fwMin" data-fw="floatMiller">−</button></div>
+  <div class="fwBody">
+    <div class="kv"><span data-i18n="tdFactor">膨胀因子 dτ/dt</span><b id="tdFactorF">0.866</b></div>
+    <div class="kv"><span data-i18n="clockShip">飞船时钟</span><b id="clockShipF">--</b></div>
+    <div class="kv"><span data-i18n="clockPlanet">行星表面时钟</span><b id="clockPlanetF">--</b></div>
+  </div>
+</div>
+<!-- 3D 光环替代 HTML 跟随标记：行星名称与状态改放控制面板固定区域 -->
 <div id="galMarker1" class="galMarker"><span class="gname" data-i18n="visMW">银河系</span><span class="gstat" id="galStat1">--</span></div>
 <div id="galMarker2" class="galMarker"><span class="gname" data-i18n="visM31">仙女星系</span><span class="gstat" id="galStat2">--</span></div>
 <div id="touchUI">
@@ -293,7 +370,7 @@ zh: {
   noteLens:"靠近黑洞时，行星的可见像是被引力弯折过的光，标记与轨迹才是它的真实位置 —— 这正是引力透镜在起作用。",
   galImpact:"碰撞参数",
   galRegime0:"正面碰撞", galRegime1:"偏心碰撞", galRegime2:"近距擦肩", galRegime3:"远距擦肩",
-  secGalaxy:"背景深空 · 银河系 × 仙女星系",
+  secGalaxy:"背景深空 · 银河系 × 仙女星系",secPlay:"播放",secViewPlay:"视角 · 播放",camMode:"模式",camPreset:"机位",presetChoose:"选择机位…",secGalaxyShort:"双星系",
   galPlay:"暂停", galPlayResume:"继续", galRestart:"重新开始",
   galLoop:"循环演示（结束后停留 2 秒自动重播）",
   galStateLabel:"演化状态", galStatusReady:"准备中",
@@ -347,7 +424,7 @@ en: {
   noteLens:"Near the hole, a planet's visible image is light bent by gravity; the marker and trail show its true position — that's gravitational lensing at work.",
   galImpact:"Impact parameter",
   galRegime0:"Head-on collision", galRegime1:"Off-center collision", galRegime2:"Close flyby", galRegime3:"Distant flyby",
-  secGalaxy:"Deep Space · Milky Way × Andromeda",
+  secGalaxy:"Deep Space · Milky Way × Andromeda",secPlay:"Playback",secViewPlay:"View · Playback",camMode:"Mode",camPreset:"Camera",presetChoose:"Choose…",secGalaxyShort:"Galaxies",
   galPlay:"Pause", galPlayResume:"Resume", galRestart:"Restart",
   galLoop:"Loop demo (auto-replay 2 s after finishing)",
   galStateLabel:"Status", galStatusReady:"Ready",
@@ -405,6 +482,128 @@ function applyLang(){
   try{ lastGalStage=''; }catch(_){}  // 星系阶段标注下次刷新时重取文案
 }
 
+/* ---------------- 悬浮窗：最小化/展开 + 事件转发 ---------------- */
+const FW = {
+  userMin: {},  // 用户手动最小化（唯一的状态，不再自动收起）
+};
+function fwSetMin(id, min){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('min', min);
+  const btn = el.querySelector('.fwMin');
+  if(btn) btn.textContent = min ? '+' : '−';
+}
+function fwIsMin(id){
+  const el = document.getElementById(id);
+  return el ? el.classList.contains('min') : true;
+}
+function fwInit(){
+  // 最小化按钮（仅手动，不再自动收起）
+  document.querySelectorAll('.fwMin').forEach(btn=>{
+    btn.onclick = (e)=>{
+      e.stopPropagation();
+      const id = btn.getAttribute('data-fw');
+      FW.userMin[id] = !fwIsMin(id);
+      fwSetMin(id, FW.userMin[id]);
+    };
+  });
+  // 点击标题栏也可以切换
+  document.querySelectorAll('.floatWin .fwHead').forEach(head=>{
+    head.onclick = (e)=>{
+      if(e.target.classList.contains('fwMin')) return;
+      const win = head.parentElement;
+      const id = win.id;
+      FW.userMin[id] = !fwIsMin(id);
+      fwSetMin(id, FW.userMin[id]);
+    };
+  });
+  // 事件转发：悬浮窗控件 → 面板控件
+  const fwd = (fId, pId, evt)=>{
+    const f = document.getElementById(fId), p = document.getElementById(pId);
+    if(f && p){
+      f.addEventListener(evt, ()=>{
+        if(evt === 'click') p.click();
+        else { p.value = f.value; p.dispatchEvent(new Event(evt)); }
+        // 同步按钮高亮
+        if(p.classList) syncFwButtons();
+      });
+    }
+  };
+  // 视角模式下拉 → 面板按钮
+  const camModeF = document.getElementById('camModeF');
+  if(camModeF){
+    camModeF.addEventListener('change', ()=>{
+      const mode = camModeF.value;
+      const pBtn = document.getElementById(mode==='fly' ? 'camFly' : 'camOrbit');
+      if(pBtn) pBtn.click();
+    });
+  }
+  // 预设机位下拉 → 触发预设
+  const camPresetF = document.getElementById('camPresetF');
+  if(camPresetF){
+    camPresetF.addEventListener('change', ()=>{
+      const preset = camPresetF.value;
+      if(preset){
+        const pBtn = document.querySelector(`#panel [data-preset="${preset}"]`);
+        if(pBtn) pBtn.click();
+        camPresetF.value = "";  // 重置为占位
+      }
+    });
+  }
+  // 跟随米勒行星复选框
+  const fFollow = document.getElementById('followPlanetF'), pFollow = document.getElementById('followPlanet');
+  if(fFollow && pFollow){
+    fFollow.addEventListener('change', ()=>{
+      pFollow.checked = fFollow.checked;
+      pFollow.dispatchEvent(new Event('change'));
+    });
+  }
+  // 播放速度
+  fwd('speedF', 'speed', 'change');
+  // 星际行星
+  fwd('rogueBF', 'rogueB', 'input');
+  fwd('rogueLaunchF', 'rogueLaunch', 'click');
+  // 星系
+  fwd('galImpactF', 'galImpact', 'input');
+  fwd('galPlayF', 'galPlay', 'click');
+  fwd('galRestartF', 'galRestart', 'click');
+  // 循环复选框
+  const fLoop = document.getElementById('galLoopF'), pLoop = document.getElementById('galLoop');
+  if(fLoop && pLoop){
+    fLoop.addEventListener('change', ()=>{
+      pLoop.checked = fLoop.checked;
+      pLoop.dispatchEvent(new Event('change'));
+    });
+  }
+}
+function syncFwButtons(){
+  // 同步悬浮窗视角模式下拉
+  const camModeF = document.getElementById('camModeF');
+  if(camModeF && typeof cam !== 'undefined'){
+    camModeF.value = cam.mode;
+  }
+}
+function fwSyncStatus(){
+  // 同步状态显示：面板 → 悬浮窗
+  const sync = (pId, fId)=>{
+    const p = document.getElementById(pId), f = document.getElementById(fId);
+    if(p && f) f.textContent = p.textContent;
+  };
+  sync('rogueStatus', 'rogueStatusF');
+  sync('rogueDist', 'rogueDistF');
+  sync('rogueBVal', 'rogueBValF');
+  sync('galStatus', 'galStatusF');
+  sync('galImpactVal', 'galImpactValF');
+  sync('tdFactor', 'tdFactorF');
+  sync('clockShip', 'clockShipF');
+  sync('clockPlanet', 'clockPlanetF');
+  // 进度条
+  const gp = document.getElementById('galProg'), gf = document.getElementById('galProgF');
+  if(gp && gf) gf.style.width = gp.style.width;
+  // 播放按钮文字
+  const gpb = document.getElementById('galPlay'), gpf = document.getElementById('galPlayF');
+  if(gpb && gpf) gpf.textContent = gpb.textContent;
+}
 /* ---------------- 基础数学 ---------------- */
 function mulberry32(seed){
   let a = seed >>> 0;
@@ -1135,16 +1334,18 @@ vec3 traceRay(vec3 C, vec3 d){
     vec3 Pprev = (cos(phiP) * e1 + sin(phiP) * e2) / uuP;
     vec3 Pcur  = (cos(phi)  * e1 + sin(phi)  * e2) / uu;
     // 行星求交（按步进参数 t 排序，近者优先）；tA = 只穿过大气壳
-    float tP = -1.0, tA = -1.0;
+    float tP = -1.0, tA = -1.0, tH = -1.0;
     if(uPlanetOn == 1){
       float th;
       if(segSphere(Pprev, Pcur, uPlanetPos, uPlanetR, th)) tP = th;
       else if(segSphere(Pprev, Pcur, uPlanetPos, uPlanetR * 1.045, th)) tA = th;
+      else if(segSphere(Pprev, Pcur, uPlanetPos, uPlanetR * 1.22, th)) tH = th;  // 米勒标识光环：金色
     }
-    float tR = -1.0;
+    float tR = -1.0, tRH = -1.0;
     if(uRogueOn == 1){
       float thr;
       if(segSphere(Pprev, Pcur, uRoguePos, uRogueR, thr)) tR = thr;
+      else if(segSphere(Pprev, Pcur, uRoguePos, uRogueR * 1.35, thr)) tRH = thr;  // 星际标识光环：青色
     }
     // 吸积盘穿越
     float tD = -1.0, rX = 0.0, phiX = 0.0, uX = 0.0, wX = 0.0;
@@ -1182,6 +1383,32 @@ vec3 traceRay(vec3 C, vec3 d){
       float gA = dopplerG(PA, length(PA), uh, wh, phih, e1, e2, thatPA);
       float g3A = gA * gA * gA;
       col += trans * vec3(0.30, 0.55, 1.0) * graz * (0.10 + 0.90 * dayA) * g3A * 0.45;
+    }
+    if(tH >= 0.0 && (tD < 0.0 || tH < tD)){
+      // 米勒标识光环：金色，加性，边缘最亮
+      float uh = mix(uuP, uu, tH), wh = mix(wwP, ww, tH), phih = mix(phiP, phi, tH);
+      vec3 PH = mix(Pprev, Pcur, tH);
+      vec3 NH = normalize(PH - uPlanetPos);
+      vec3 VH = -photonDir(uh, wh, phih, e1, e2);
+      float ring = pow(1.0 - abs(dot(NH, VH)), 2.0);  // 边缘强，中心弱
+      vec3 thatPH = normalize(cross(vec3(0.0, 1.0, 0.0), PH));
+      float gH = dopplerG(PH, length(PH), uh, wh, phih, e1, e2, thatPH);
+      float g3H = gH * gH * gH;
+      col += trans * vec3(1.0, 0.72, 0.30) * ring * g3H * 0.85;
+    }
+    if(tRH >= 0.0 && (tD < 0.0 || tRH < tD)){
+      // 星际标识光环：青色，加性，边缘最亮
+      float uh = mix(uuP, uu, tRH), wh = mix(wwP, ww, tRH), phih = mix(phiP, phi, tRH);
+      vec3 PH = mix(Pprev, Pcur, tRH);
+      vec3 NH = normalize(PH - uRoguePos);
+      vec3 VH = -photonDir(uh, wh, phih, e1, e2);
+      float ring = pow(1.0 - abs(dot(NH, VH)), 2.0);
+      vec3 thatPH = normalize(cross(vec3(0.0, 1.0, 0.0), PH));
+      float gH = dopplerG(PH, length(PH), uh, wh, phih, e1, e2, thatPH);
+      float g3H = gH * gH * gH;
+      // 脉冲：随时间呼吸，0.75~1.0
+      float pulse = 0.875 + 0.125 * sin(uTime * 3.0);
+      col += trans * vec3(0.35, 0.85, 1.0) * ring * g3H * 0.90 * pulse;
     }
     if(tD >= 0.0){
       vec3 PX = (cos(phiX) * e1 + sin(phiX) * e2) / uX;
@@ -1521,17 +1748,9 @@ function geomScreenPos(cam, W){
   if(dx*fwd[0]+dy*fwd[1]+dz*fwd[2]<=0.1) return null;
   return worldToScreen(cam, W[0], W[1], W[2]);
 }
-function millerMarkerUpdate(cam){
-  const el=$('millerMarker');
-  if(!el||!planetOn){ if(el) el.style.display='none'; return; }
-  placeMarker(el, geomScreenPos(cam, planetPos));
-}
-function rogueMarkerUpdate(cam){
-  const el=$('rogueMarker');
-  if(!el) return;
-  if(!rogueOnChk||ROG.state==='plunge'){ el.style.display='none'; return; }
-  placeMarker(el, geomScreenPos(cam, ROG.p));
-}
+/* HTML 跟随标记已移除（2026-10-02）：改用 3D 光环，函数保留为空避免调用处报错 */
+function millerMarkerUpdate(cam){}
+function rogueMarkerUpdate(cam){}
 function galStageKey(){
   if(!sim) return 'galStApproach';
   if(sim.bound){
@@ -1997,6 +2216,7 @@ function setCamButtons(){
   $('camFly').classList.toggle('on', cam.mode==='fly');
   $('camOrbit').classList.toggle('on', cam.mode==='orbit');
   document.body.classList.toggle('orbitMode', cam.mode==='orbit');
+  try{ syncFwButtons(); }catch(_){}
 }
 $('camFly').onclick=()=>{ cam.mode='fly'; setCamButtons(); };
 $('camOrbit').onclick=()=>{ cam.mode='orbit'; cam.follow=false; $('followPlanet').checked=false; setCamButtons(); };
@@ -2140,6 +2360,8 @@ function frame(now){
   rogueMarkerUpdate(cam);
   millerMarkerUpdate(cam);
   galMarkerUpdate(cam);
+  // 悬浮窗：同步状态显示
+  fwSyncStatus();
   if(HDR_OK){ ppResize(BH.w, BH.h); ppRender(simTime); }
   else bhBlit();
 
@@ -2152,7 +2374,7 @@ function frame(now){
     const rRg=Math.hypot(ROG.p[0],ROG.p[1],ROG.p[2]);
     $('rogueDist').textContent=rRg.toFixed(1)+'M';
     $('rogueStatus').textContent = (ROG.state==='approach'&&ROG.receding) ? t('rogueStRecede') : t(ROG_STATE_KEY[ROG.state]);
-    $('rogueMarkerStat').textContent = $('rogueStatus').textContent + ' · ' + rRg.toFixed(1) + 'M';
+    // rogueMarkerStat 已随 HTML 标记删除，状态只显示在控制面板
     if(sim){
       let st=sim.status();
       if(sim.done && galLoop && galPlaying && simDoneAt)
@@ -2182,6 +2404,7 @@ document.getElementById('langBtn').onclick=()=>{
   applyLang();
 };
 applyLang();
+fwInit();  // 悬浮窗初始化
 if(window.innerWidth<720) $('panel').classList.add('hidden');  // 手机默认收起面板，给手势留空间
 resize();
 document.getElementById('loading').style.display='none';
