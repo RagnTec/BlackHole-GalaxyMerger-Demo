@@ -12,10 +12,12 @@
 - **Accretion disk**: spin-dependent ISCO inner edge (Bardeen), Novikov–Thorne temperature profile, Doppler beaming and gravitational redshift
 - **Galaxy merger & flyby**: Milky Way (barred spiral) × Andromeda (spiral) restricted three-body simulation with merger and flyby scenarios; tidal bridges and tails emerge naturally
 - **Miller's planet**: giant waves, tidal locking, time-dilation readout
+- **Interstellar rogue planet**: adjustable impact parameter (4–24M), full evolution: flyby / capture & inspiral / tidal disruption at 7M Roche limit (shatters into 140-particle debris stream) / plunge, high-visibility cyan-glow rendering
+- **Continuous galaxy collision parameter**: 0–100 slider seamlessly blends head-on / off-center merger / close & distant flybys
+- **Display filters**: accretion disk, Miller's planet, rogue planet, Milky Way, Andromeda, background stars can be toggled independently
 - **Mobile ready**: one-finger rotate, pinch zoom, virtual joystick, bottom control drawer on small screens
 - **Bilingual UI**: auto-detects browser language, manual toggle at top-right (choice is remembered)
 - **Adaptive rendering**: HDR bloom pipeline on desktop (RGBA16F + separable Gaussian bloom + ACES), single-pass direct output on mobile (designed around iPhone WebGL constraints)
-- **Recording**: `canvas.captureStream` + `MediaRecorder`, records only the 3D canvas, not the UI
 
 ## Run Locally
 
@@ -36,7 +38,7 @@ The whole project is a single `index.html` (~86KB) — intentionally dependency-
 | --- | --- |
 | GLSL fragment shader | geodesic integration, disk shading, analytic glow (impact-parameter driven, single pass) |
 | JS physics | restricted three-body galaxy sim, planet/camera dynamics, adaptive resolution |
-| JS UI | desktop panel, mobile gestures & drawer, recording, demo looping, bilingual toggle |
+| JS UI | desktop panel, mobile gestures & drawer, demo looping, bilingual toggle, display filters |
 
 `.nojekyll` tells GitHub Pages to skip Jekyll processing.
 
