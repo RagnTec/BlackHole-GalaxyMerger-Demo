@@ -70,6 +70,26 @@
 
   #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#04060c;
     color:#9fb2d8;font-size:14px;z-index:90;letter-spacing:2px;}
+/* 一键隐藏UI：沉浸式体验（恢复按钮常驻） */
+#uiToggle{
+  position:fixed; right:12px; bottom:calc(12px + env(safe-area-inset-bottom, 0px)); z-index:999;
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(20,24,32,.65); border:1px solid rgba(255,255,255,.35);
+  color:#fff; font-size:20px; cursor:pointer; opacity:.5;
+  display:flex; align-items:center; justify-content:center;
+}
+#uiToggle:hover{opacity:.9;}
+body.ui-hidden #title, body.ui-hidden #mtools, body.ui-hidden .floatWin,
+body.ui-hidden #panel, body.ui-hidden #hud, body.ui-hidden #toast{display:none !important;}
+body.ui-hidden #uiToggle{
+  opacity:.85;
+  animation:uiPulse 2.2s ease-in-out infinite;
+  box-shadow:0 0 12px rgba(140,200,255,.55);
+}
+@keyframes uiPulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.12);}
+}
 canvas{touch-action:none}
 #touchUI{display:none}
 body.touch #touchUI{display:block}
@@ -166,6 +186,7 @@ body.orbitMode #udBtns{display:none}
   <section data-sec="miller">
     <h3 data-i18n="secMiller">米勒行星 · 引力时间膨胀</h3>
     <div class="kv"><span data-i18n="tdFactor">膨胀因子 dτ/dt</span><b id="tdFactor">0.866</b></div>
+    <div class="kv"><span data-i18n="tdEquiv">行星1秒 ≈ 飞船17.0小时</span><b id="tdEquivV">--</b></div>
     <div class="kv"><span data-i18n="clockShip">飞船时钟</span><b id="clockShip">00:00:00</b></div>
     <div class="kv"><span data-i18n="clockPlanet">行星表面时钟</span><b id="clockPlanet">00:00:00</b></div>
     <p class="note" data-i18n="noteMiller">行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。</p>
@@ -180,6 +201,7 @@ body.orbitMode #udBtns{display:none}
     <div class="row">
       <button id="rogueLaunch" data-i18n="rogueLaunch">重新发射</button>
     </div>
+    <label class="chk"><input type="checkbox" id="rogueAuto" checked><span data-i18n="rogueAuto">随机生成</span></label>
     <div class="kv"><span data-i18n="rogueState">状态</span><b id="rogueStatus">--</b></div>
     <div class="kv"><span data-i18n="rogueDist">距黑洞</span><b id="rogueDist">--</b></div>
     <p class="note" data-i18n="noteRogue"></p>
@@ -209,7 +231,6 @@ body.orbitMode #udBtns{display:none}
       <button id="galPlay">暂停</button>
       <button id="galRestart" data-i18n="galRestart">重新开始</button>
     </div>
-    <label class="chk"><input type="checkbox" id="galLoop" checked><span data-i18n="galLoop">循环演示（结束后停留 2 秒自动重播）</span></label>
     <div class="bar"><div id="galProg"></div></div>
     <div class="kv"><span data-i18n="galStateLabel">演化状态</span><b id="galStatus" data-i18n="galStatusReady">准备中</b></div>
     <p class="note" data-i18n="noteGalaxy">限制性三体模型（Toomre 1972）：两个点质量 + 无质量试验粒子盘；「合并」场景含动力学摩擦，潮汐桥与潮汐尾自然形成，直至弛豫为椭圆星系或相互分离。</p>
@@ -233,9 +254,15 @@ body.orbitMode #udBtns{display:none}
         <option value="0.4" data-i18n="qLow">低</option>
       </select>
     </div>
+    <div class="row"><span data-i18n="starDensityLabel">星空密度</span>
+      <input type="range" id="starDensity" min="0.1" max="1" step="0.05" value="1" style="flex:1">
+      <b id="starDensityVal" style="min-width:3em;text-align:right">100%</b>
+    </div>
+    <div class="row"><span data-i18n="starBrightLabel">星空亮度</span>
+      <input type="range" id="starBright" min="0" max="2" step="0.1" value="1" style="flex:1">
+      <b id="starBrightVal" style="min-width:2.5em;text-align:right">1.0</b>
+    </div>
     <div class="kv"><span>FPS</span><b id="fps">--</b></div>
-
-    <p class="note" data-i18n="noteRec">录制当前画面为视频文件（iPhone 上为 mp4，可直接分享）。录制只含 3D 画面，不含控制面板。</p>
   </section>
 
   <details>
@@ -250,6 +277,9 @@ body.orbitMode #udBtns{display:none}
     </ul>
   </details>
 </div>
+<!-- 一键隐藏UI后的恢复按钮（常驻，半透明） -->
+<button id="uiToggle" title="显示/隐藏界面">👁</button>
+
 <!-- 悬浮窗：视角+播放（二合一） / 星际行星 / 双星系 / 米勒行星 -->
 <div class="floatWin" id="floatViewPlay">
   <div class="fwHead"><b data-i18n="secViewPlay">视角 · 播放</b><button class="fwMin" data-fw="floatViewPlay">−</button></div>
@@ -279,6 +309,7 @@ body.orbitMode #udBtns{display:none}
       </select>
     </div>
     <label class="chk"><input type="checkbox" id="followPlanetF"><span data-i18n="followPlanet">跟随米勒行星</span></label>
+    <div class="row"><button id="hideUIF" style="flex:1" data-i18n="hideUI">🙈 隐藏界面</button></div>
   </div>
 </div>
 <div class="floatWin" id="floatRogue">
@@ -291,6 +322,8 @@ body.orbitMode #udBtns{display:none}
       <b id="rogueBValF" style="min-width:3.5em;text-align:right">16M</b>
     </div>
     <div class="row"><button id="rogueLaunchF" data-i18n="rogueLaunch">重新发射</button></div>
+    <label class="chk"><input type="checkbox" id="rogueAutoF" checked><span data-i18n="rogueAuto">随机生成</span></label>
+    <div class="kv"><span data-i18n="rogueNext">下一个</span><b id="rogueNextF">--</b></div>
   </div>
 </div>
 <div class="floatWin" id="floatGalaxy">
@@ -306,13 +339,13 @@ body.orbitMode #udBtns{display:none}
       <button id="galPlayF">暂停</button>
       <button id="galRestartF" data-i18n="galRestart">重新开始</button>
     </div>
-    <label class="chk"><input type="checkbox" id="galLoopF" checked><span data-i18n="galLoop">循环演示</span></label>
   </div>
 </div>
 <div class="floatWin" id="floatMiller">
   <div class="fwHead"><b data-i18n="millerTag">米勒行星</b><button class="fwMin" data-fw="floatMiller">−</button></div>
   <div class="fwBody">
     <div class="kv"><span data-i18n="tdFactor">膨胀因子 dτ/dt</span><b id="tdFactorF">0.866</b></div>
+    <div class="kv"><span data-i18n="tdEquiv">行星1秒 ≈ 飞船17.0小时</span><b id="tdEquivVF">--</b></div>
     <div class="kv"><span data-i18n="clockShip">飞船时钟</span><b id="clockShipF">--</b></div>
     <div class="kv"><span data-i18n="clockPlanet">行星表面时钟</span><b id="clockPlanetF">--</b></div>
   </div>
@@ -354,28 +387,28 @@ zh: {
   followPlanet:"跟随米勒行星",
   secDisk:"黑洞与吸积盘",
   timeWarp:"时间流速",
-  secMiller:"米勒行星 · 引力时间膨胀", tdFactor:"膨胀因子 dτ/dt",
+  secMiller:"米勒行星 · 引力时间膨胀", tdFactor:"膨胀因子 dτ/dt",tdEquiv:"行星1秒 ≈ 飞船",
   clockShip:"飞船时钟", clockPlanet:"行星表面时钟",
-  noteMiller:"行星位于 12M 顺行圆轨道，潮汐锁定。电影中「1 小时 = 7 年」需要近极端克尔黑洞；本演示采用史瓦西度规精确求解，膨胀效应较温和。",
+  noteMiller:"严格遵循电影设定：米勒星上 1 小时 = 远处（飞船/地球）7 年，即 dτ/dt = 1/61,320。按广义相对论这要求卡冈图雅为近极端克尔黑洞（自旋 a*→1）、行星轨道紧贴视界；本演示光线追踪仍用史瓦西度规，时钟按电影比例走时。",
   secRogue:"星际行星 · 黑洞捕获演示", rogueB:"瞄准距离 b",
-  rogueLaunch:"重新发射",
+  rogueLaunch:"重新发射",rogueAuto:"随机生成",rogueNext:"下一个",
   rogueState:"状态", rogueDist:"距黑洞",
   rogueStApproach:"接近中", rogueStRecede:"远离中", rogueStCaptured:"已捕获 · 旋入中", rogueStDisrupting:"潮汐撕裂中", rogueStEscape:"飞掠逃逸", rogueStPlunge:"已坠入黑洞",
   noteRogue:"牛顿引力 + 局域阻尼（∝1/r⁴，模拟引力波耗散；纯牛顿引力下飞掠不可能被捕获）。行星从 45M 处以 0.25c 掠过：b≲15 直接坠入（r<2.5M），b≈16 被捕获旋入数圈后坠入，b≳18 飞掠而过。旋入至 7M（洛希极限）时行星被潮汐撕碎成碎片流，随后坠入黑洞。",
   secVis:"显示筛选", visDisk:"吸积盘", visMiller:"米勒行星", visRogue:"星际行星",
   visMW:"银河系", visM31:"仙女星系", visStars:"背景星空", rogueTag:"星际行星",
   noteVis:"黑洞阴影是时空本身，无法关闭；全部取消勾选即为「只看黑洞」。可多选自由组合。",
-  galStApproach:"接近中", galStMerging:"合并中", galStMerged:"合并完成", galStRecede:"远离中",
+  galStApproach:"接近中", galStMerging:"合并中", galStMerged:"合并完成", galStRecede:"远离中", galStEntangled:"交缠中",
   millerTag:"米勒行星",
   noteLens:"靠近黑洞时，行星的可见像是被引力弯折过的光，标记与轨迹才是它的真实位置 —— 这正是引力透镜在起作用。",
   galImpact:"碰撞参数",
   galRegime0:"正面碰撞", galRegime1:"偏心碰撞", galRegime2:"近距擦肩", galRegime3:"远距擦肩",
-  secGalaxy:"背景深空 · 银河系 × 仙女星系",secPlay:"播放",secViewPlay:"视角 · 播放",camMode:"模式",camPreset:"机位",presetChoose:"选择机位…",secGalaxyShort:"双星系",
+  secGalaxy:"背景深空 · 银河系 × 仙女星系",secPlay:"播放",secViewPlay:"视角 · 播放",hideUI:"🙈 隐藏界面",hideUITip:"界面已隐藏，点击右下角 👁 恢复",camMode:"模式",camPreset:"机位",presetChoose:"选择机位…",secGalaxyShort:"双星系",
   galPlay:"暂停", galPlayResume:"继续", galRestart:"重新开始",
   galLoop:"循环演示（结束后停留 2 秒自动重播）",
   galStateLabel:"演化状态", galStatusReady:"准备中",
   noteGalaxy:"限制性三体模型（Toomre 1972）：两个点质量 + 无质量试验粒子盘。拖动「碰撞参数」滑杆可在正面碰撞与远距擦肩之间连续调节（偏心率 0.5→1.2，近心点 0.7→1.8）；束缚轨道含动力学摩擦，潮汐桥与潮汐尾自然形成，直至弛豫为椭圆星系或相互分离。",
-  secGfx:"画质", glowLabel:"辉光强度", spinLabel:"黑洞自旋 a*", qualityLabel:"渲染分辨率",
+  secGfx:"画质", glowLabel:"辉光强度", spinLabel:"黑洞自旋 a*", qualityLabel:"渲染分辨率",starDensityLabel:"星空密度",starBrightLabel:"星空亮度",
   qAuto:"自动", qHigh:"高", qMed:"中", qLow:"低",
   physTitle:"物理说明",
   phys1:"<b>引力透镜</b>：每像素沿史瓦西零测地线积分（轨道平面约化 + RK4，手机 420 步 / PC 640 步），光子球 r=3M，阴影半径 3√3M 自然呈现。Kerr 度规光子积分为下一步里程碑，当前版本未做。",
@@ -390,7 +423,7 @@ zh: {
   gal_approach:"两星系接近中", gal_first:"首次交会 · 潮汐桥形成",
   gal_after:"交会后 · 潮汐尾展开中", gal_merging:"双核合并中 · 潮汐尾回落",
   gal_relaxed:"已稳定 · 弛豫为椭圆星系",
-  gal_flyby_close:"近距离交会 · 潮汐扰动", gal_separated:"已分离 · 各自远去",
+  gal_flyby_close:"近距离交会 · 潮汐扰动", gal_separating:"正在分离 · 彼此远去", gal_separated:"已分离 · 各自远去",
   errNoWebGL:"需要支持 WebGL2 的浏览器才能运行此演示。<br>请使用最新版 Safari / Chrome / Edge / Firefox 打开。<br>若在 App 内置浏览器中打开黑屏，请点分享 →「在 Safari 中打开」。",
   errBoot:"启动失败：", errBootHint:"<br>可尝试：用 Safari 直接打开本页面，或把页面另存后用电脑浏览器打开。",
   errShader:"shader 编译失败: ",
@@ -408,28 +441,28 @@ en: {
   followPlanet:"Follow Miller's planet",
   secDisk:"Black Hole & Disk",
   timeWarp:"Time warp",
-  secMiller:"Miller's Planet · Time Dilation", tdFactor:"Dilation factor dτ/dt",
+  secMiller:"Miller's Planet · Time Dilation", tdFactor:"Dilation factor dτ/dt",tdEquiv:"1s on planet ≈",
   clockShip:"Ship clock", clockPlanet:"Planet surface clock",
-  noteMiller:"The planet is on a 12M prograde circular orbit, tidally locked. The film's “1 hour = 7 years” needs a near-extremal Kerr black hole; this demo solves the Schwarzschild metric exactly, so the dilation is milder.",
+  noteMiller:"Strictly following the film: 1 hour on Miller planet = 7 years far away (ship/Earth), i.e. dT/dt = 1/61,320. In GR this needs a near-extremal Kerr black hole (spin a*->1) with the planet skimming the horizon; ray tracing here stays Schwarzschild while the clocks keep film time.",
   secRogue:"Rogue Planet · Black Hole Capture", rogueB:"Impact parameter b",
-  rogueLaunch:"Relaunch",
+  rogueLaunch:"Relaunch",rogueAuto:"Auto spawn",rogueNext:"Next",
   rogueState:"Status", rogueDist:"Distance to hole",
   rogueStApproach:"Approaching", rogueStRecede:"Receding", rogueStCaptured:"Captured · inspiralling", rogueStDisrupting:"Tidally disrupting", rogueStEscape:"Flyby escape", rogueStPlunge:"Plunged into the hole",
   noteRogue:"Newtonian gravity + localized damping (∝1/r⁴, mimicking gravitational-wave dissipation; a pure Newtonian flyby can never be captured). The planet starts at 45M with 0.25c: b≲15 plunges directly (r<2.5M), b≈16 is captured and inspirals for a few orbits before plunging, b≳18 flies by. Inside 7M (Roche limit) the planet is tidally shredded into a debris stream before plunging.",
   secVis:"Visibility", visDisk:"Accretion disk", visMiller:"Miller's planet", visRogue:"Rogue planet",
   visMW:"Milky Way", visM31:"Andromeda", visStars:"Background stars", rogueTag:"Rogue planet",
   noteVis:"The black-hole shadow is spacetime itself and cannot be switched off; uncheck everything for a black-hole-only view. Mix and match freely.",
-  galStApproach:"Approaching", galStMerging:"Merging", galStMerged:"Merged", galStRecede:"Receding",
+  galStApproach:"Approaching", galStMerging:"Merging", galStMerged:"Merged", galStRecede:"Receding", galStEntangled:"Entangled",
   millerTag:"Miller's planet",
   noteLens:"Near the hole, a planet's visible image is light bent by gravity; the marker and trail show its true position — that's gravitational lensing at work.",
   galImpact:"Impact parameter",
   galRegime0:"Head-on collision", galRegime1:"Off-center collision", galRegime2:"Close flyby", galRegime3:"Distant flyby",
-  secGalaxy:"Deep Space · Milky Way × Andromeda",secPlay:"Playback",secViewPlay:"View · Playback",camMode:"Mode",camPreset:"Camera",presetChoose:"Choose…",secGalaxyShort:"Galaxies",
+  secGalaxy:"Deep Space · Milky Way × Andromeda",secPlay:"Playback",secViewPlay:"View · Playback",hideUI:"🙈 Hide UI",hideUITip:"UI hidden — tap the 👁 at bottom-right to restore",camMode:"Mode",camPreset:"Camera",presetChoose:"Choose…",secGalaxyShort:"Galaxies",
   galPlay:"Pause", galPlayResume:"Resume", galRestart:"Restart",
   galLoop:"Loop demo (auto-replay 2 s after finishing)",
   galStateLabel:"Status", galStatusReady:"Ready",
   noteGalaxy:"Restricted three-body model (Toomre 1972): two point masses + massless test-particle disks. Drag the impact-parameter slider to sweep continuously from head-on collision to distant flyby (eccentricity 0.5→1.2, pericenter 0.7→1.8); bound orbits include dynamical friction, and tidal bridges/tails form naturally until relaxation into an elliptical or separation.",
-  secGfx:"Graphics", glowLabel:"Glow", spinLabel:"Black hole spin a*", qualityLabel:"Resolution",
+  secGfx:"Graphics", glowLabel:"Glow", spinLabel:"Black hole spin a*", qualityLabel:"Resolution",starDensityLabel:"Star density",starBrightLabel:"Star brightness",
   qAuto:"Auto", qHigh:"High", qMed:"Medium", qLow:"Low",
   physTitle:"Physics notes",
   phys1:"<b>Lensing</b>: every pixel integrates a Schwarzschild null geodesic (orbit-plane reduction + RK4, 420 steps on mobile / 640 on PC); the photon sphere at r=3M and the 3√3M shadow radius emerge naturally. Kerr-metric photon integration is a future milestone, not in this version.",
@@ -444,7 +477,7 @@ en: {
   gal_approach:"The two galaxies are approaching", gal_first:"First encounter · tidal bridge forming",
   gal_after:"After encounter · tidal tails unfolding", gal_merging:"Nuclei merging · tails falling back",
   gal_relaxed:"Settled · relaxed into an elliptical",
-  gal_flyby_close:"Close encounter · tidal disturbance", gal_separated:"Separated · drifting apart",
+  gal_flyby_close:"Close encounter · tidal disturbance", gal_separating:"Separating · moving apart", gal_separated:"Separated · drifting apart",
   errNoWebGL:"This demo needs a browser with WebGL2 support.<br>Please use the latest Safari / Chrome / Edge / Firefox.<br>If you get a black screen in an in-app browser, tap Share → “Open in Safari”.",
   errBoot:"Startup failed: ", errBootHint:"<br>Try: open this page directly in Safari, or save it and open with a desktop browser.",
   errShader:"shader compile failed: ",
@@ -529,6 +562,14 @@ function fwInit(){
       });
     }
   };
+  // 一键隐藏UI：沉浸式体验
+  const hideBtn = document.getElementById('hideUIF');
+  if(hideBtn) hideBtn.onclick = ()=>{
+    toast(t('hideUITip'));
+    setTimeout(()=>document.body.classList.add('ui-hidden'), 1500);
+  };
+  const uiToggle = document.getElementById('uiToggle');
+  if(uiToggle) uiToggle.onclick = ()=>document.body.classList.toggle('ui-hidden');
   // 视角模式下拉 → 面板按钮
   const camModeF = document.getElementById('camModeF');
   if(camModeF){
@@ -563,18 +604,11 @@ function fwInit(){
   // 星际行星
   fwd('rogueBF', 'rogueB', 'input');
   fwd('rogueLaunchF', 'rogueLaunch', 'click');
+  fwd('rogueAutoF', 'rogueAuto', 'change');
   // 星系
   fwd('galImpactF', 'galImpact', 'input');
   fwd('galPlayF', 'galPlay', 'click');
   fwd('galRestartF', 'galRestart', 'click');
-  // 循环复选框
-  const fLoop = document.getElementById('galLoopF'), pLoop = document.getElementById('galLoop');
-  if(fLoop && pLoop){
-    fLoop.addEventListener('change', ()=>{
-      pLoop.checked = fLoop.checked;
-      pLoop.dispatchEvent(new Event('change'));
-    });
-  }
 }
 function syncFwButtons(){
   // 同步悬浮窗视角模式下拉
@@ -595,6 +629,7 @@ function fwSyncStatus(){
   sync('galStatus', 'galStatusF');
   sync('galImpactVal', 'galImpactValF');
   sync('tdFactor', 'tdFactorF');
+  sync('tdEquivV', 'tdEquivVF');
   sync('clockShip', 'clockShipF');
   sync('clockPlanet', 'clockPlanetF');
   // 进度条
@@ -603,6 +638,18 @@ function fwSyncStatus(){
   // 播放按钮文字
   const gpb = document.getElementById('galPlay'), gpf = document.getElementById('galPlayF');
   if(gpb && gpf) gpf.textContent = gpb.textContent;
+  // 流浪行星：下一个生成倒计时
+  const rnF = document.getElementById('rogueNextF');
+  if(rnF){
+    if(ROG.auto.enabled && ROG.auto.waitUntil){
+      const s=Math.max(0, Math.ceil((ROG.auto.waitUntil-performance.now())/1000));
+      rnF.textContent=s+'s';
+    } else if(ROG.dieT>0 && ROG.dieT<1){
+      rnF.textContent='…';
+    } else {
+      rnF.textContent='--';
+    }
+  }
 }
 /* ---------------- 基础数学 ---------------- */
 function mulberry32(seed){
@@ -633,11 +680,12 @@ class GalaxySim {
   }
   build(){
     // 三锚点插值：正面碰撞(0) → 经典合并(0.5) → 擦肩(1)
+    // T 按 ~15s 主演化时长标定（约 5.76 模拟单位/秒）
     const s=this.impact;
     const A=[
-      {s:0.0, e:0.50, rp:0.70, fr:0.14, T:130},
-      {s:0.5, e:0.75, rp:1.40, fr:0.10, T:110},
-      {s:1.0, e:1.20, rp:1.80, fr:0.00, T:70},
+      {s:0.0, e:0.50, rp:0.70, fr:0.14, T:102},
+      {s:0.5, e:0.75, rp:1.40, fr:0.10, T:86},
+      {s:1.0, e:1.20, rp:1.80, fr:0.00, T:55},
     ];
     let a0=A[0], a1=A[1];
     if(s>0.5){ a0=A[1]; a1=A[2]; }
@@ -775,7 +823,7 @@ class GalaxySim {
     out[o]=ax; out[o+1]=ay; out[o+2]=az;
   }
   step(dt){
-    if(this.done) return;
+    // done 后不停止，继续按物理演化到稳定状态（合并弛豫 / 相互远离）
     const n=this.n, P=this.pos, V=this.vel;
     const acc=this._acc || (this._acc=new Float32Array(n*3));
     // leapfrog: kick-half → drift → kick-half
@@ -807,8 +855,8 @@ class GalaxySim {
       if(this.merged && this.t>this.T_END) this.done=true;
       if(this.t>this.T_END+30) this.done=true;   // 兜底：超时即判完，保证循环能触发
     } else {
+      // 非束缚：只有真正拉开距离才算演完（去掉超时兜底，避免状态与画面脱节）
       if(sep>14 && this.periDone) this.done=true;
-      if(this.t>this.T_END) this.done=true;
     }
   }
   stepCores(dt){
@@ -837,8 +885,16 @@ class GalaxySim {
       if(this.t<20) return 'gal_approach';
       return 'gal_first';
     }
+    // 非束缚：按实时相对距离判定，与星系标记逻辑对齐，不预判结局
+    const sep=this.separation();
+    if(sep<3) return 'gal_flyby_close';  // 近距离交会 · 潮汐扰动（对齐标记「交缠中」）
     if(this.done) return 'gal_separated';
-    if(this.periDone) return 'gal_flyby_close';
+    if(this.periDone){
+      const c1=this.c1, c2=this.c2;
+      const rdot=((c2.x-c1.x)*(c2.vx-c1.vx)+(c2.y-c1.y)*(c2.vy-c1.vy)+(c2.z-c1.z)*(c2.vz-c1.vz))/Math.max(sep,1e-6);
+      if(rdot>0) return 'gal_separating';  // 正在分离（对齐标记「远离中」）
+      return 'gal_flyby_close';
+    }
     return 'gal_approach';
   }
   progress(){ return Math.min(this.t/this.T_END, 1); }
@@ -946,6 +1002,7 @@ void main(){
 const BG_FS = `#version 300 es
 precision highp float;
 in vec3 vCol;
+uniform float uStarBright;
 out vec4 o;
 void main(){
   vec2 q = (gl_PointCoord - vec2(0.5)) * 2.0;
@@ -956,7 +1013,7 @@ void main(){
   float sx = pow(max(0.0, 1.0 - abs(q.x) * 2.5), 8.0) * pow(max(0.0, 1.0 - abs(q.y) * 9.0), 2.0);
   float sy = pow(max(0.0, 1.0 - abs(q.y) * 2.5), 8.0) * pow(max(0.0, 1.0 - abs(q.x) * 9.0), 2.0);
   float spike = (sx + sy) * smoothstep(0.75, 1.05, lum) * 0.9;
-  o = vec4(vCol * (core + halo + spike), 1.0);
+  o = vec4(vCol * (core + halo + spike) * uStarBright, 1.0);
 }`;
 function bgInit(){
   const bd = [0.18, 0.14, -1.0];
@@ -966,6 +1023,7 @@ function bgInit(){
 
   BG.prog = makeProgram(BG_VS, BG_FS);
   BG.uVP = gl.getUniformLocation(BG.prog, 'uVP');
+  BG.uStarBright = gl.getUniformLocation(BG.prog, 'uStarBright');
 
   // 立方体贴图 + FBO
   BG.cubeTex = gl.createTexture();
@@ -1065,6 +1123,7 @@ function bgRenderCube(){
   gl.disable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE);
+  gl.uniform1f(BG.uStarBright, starBright);
   for(let f=0;f<6;f++){
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
       gl.TEXTURE_CUBE_MAP_POSITIVE_X+f, BG.cubeTex, 0);
@@ -1072,12 +1131,16 @@ function bgRenderCube(){
     gl.clear(gl.COLOR_BUFFER_BIT);
     const view=matLookAt([0,0,0], CUBE_FACES[f].c, CUBE_FACES[f].u);
     gl.uniformMatrix4fv(BG.uVP, false, matMul(proj, view));
-    const draw=(v)=>{
+    const draw=(v, dens)=>{
       gl.bindVertexArray(v.vao);
-      gl.drawArrays(gl.POINTS, 0, v.count);
+      const cnt = dens!==undefined ? Math.max(1, Math.floor(v.count*dens)) : v.count;
+      gl.drawArrays(gl.POINTS, 0, cnt);
     };
-    if(showStars){ draw(BG.starVAO); draw(BG.fuzzVAO); }
+    if(showStars){ draw(BG.starVAO, starDensity); draw(BG.fuzzVAO, starDensity); }
+    // 双星系不受星空亮度滑杆影响，画之前重置为 1.0
+    gl.uniform1f(BG.uStarBright, 1.0);
     if(BG.galVAO) draw(BG.galVAO);
+    gl.uniform1f(BG.uStarBright, starBright);
   }
   gl.bindVertexArray(null);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -1524,8 +1587,8 @@ function bhRender(cam, time, planetPos, diskOn, planetOn){
   gl.uniform1i(u.uDiskOn, diskOn?1:0);
   gl.uniform1i(u.uPlanetOn, planetOn?1:0);
   gl.uniform3fv(u.uRoguePos, ROG.p);
-  gl.uniform1f(u.uRogueR, 1.15*(1-ROG.tide*0.75));
-  gl.uniform1i(u.uRogueOn, (rogueOnChk && ROG.state!=='plunge')?1:0);
+  gl.uniform1f(u.uRogueR, 1.15*(1-ROG.tide*0.75)*(1-ROG.dieT));
+  gl.uniform1i(u.uRogueOn, (rogueOnChk && ROG.state!=='plunge' && ROG.dieT<1)?1:0);
   gl.uniform1f(u.uGlow, HDR_OK?0:glowAmt);   // 桌面端用真实泛光，关掉解析式辉光避免双重发光
   gl.uniform1f(u.uRisco, riscoC);
   gl.uniform1f(u.uFMax, fmaxC);
@@ -1541,15 +1604,76 @@ const ROG = {
   state:'approach',   // approach | captured | disrupting | escape | plunge
   trail:[], lastRec:[-45,0,16],
   debris:[], tide:0,  // tide: 0→1 潮汐撕裂进度
+  dieT:0,             // 自毁淡出 0→1（被新行星替换时）
+  auto:{ enabled:true, waitUntil:0, pendingSpawn:false, stateT:0, lastState:'' },
 };
 let rogueOnChk = true;
 const ROG_D=12, ROG_VINF=0.25, ROG_R0=45, ROG_WARP=25, ROG_PLUNGE_R=2.5, ROG_ROCHE_R=7.0;
 const ROG_STATE_KEY={approach:'rogueStApproach',captured:'rogueStCaptured',disrupting:'rogueStDisrupting',escape:'rogueStEscape',plunge:'rogueStPlunge'};
-function rogueLaunch(b){
+function rogueLaunch(b, ang){
   ROG.b=b;
-  ROG.p=[-ROG_R0,0,b]; ROG.v=[ROG_VINF,0,0];
-  ROG.state='approach'; ROG.trail=[]; ROG.lastRec=[-ROG_R0,0,b]; ROG.receding=false;
-  ROG.debris=[]; ROG.tide=0;
+  // 入射方向绕 y 轴旋转 ang（随机生成时用，手动发射传 0）
+  const a=ang||0, ca=Math.cos(a), sa=Math.sin(a);
+  const lx=-ROG_R0, lz=b;
+  ROG.p=[lx*ca-lz*sa, 0, lx*sa+lz*ca];
+  ROG.v=[ROG_VINF*ca, 0, ROG_VINF*sa];
+  ROG.state='approach'; ROG.trail=[]; ROG.lastRec=ROG.p.slice(); ROG.receding=false;
+  ROG.debris=[]; ROG.tide=0; ROG.dieT=0;
+  // 重置自动生成状态机
+  ROG.auto.waitUntil=0; ROG.auto.pendingSpawn=false;
+  ROG.auto.lastState=''; ROG.auto.stateT=0;
+  rogueSyncBUI(b);
+}
+function rogueSyncBUI(b){
+  // 本次设定的瞄准距离显示在信息窗口（随机生成时同步）
+  const rb=document.getElementById('rogueB'), rbv=document.getElementById('rogueBVal');
+  const rbf=document.getElementById('rogueBF'), rbfv=document.getElementById('rogueBValF');
+  if(rb) rb.value=b;
+  if(rbv) rbv.textContent=b.toFixed(1)+'M';
+  if(rbf) rbf.value=b;
+  if(rbfv) rbfv.textContent=b.toFixed(1)+'M';
+}
+function rogueLaunchRandom(){
+  // 随机瞄准距离，覆盖四种结局：坠入 / 撕裂 / 捕获 / 逃离
+  const roll=Math.random();
+  let b;
+  if(roll<0.22) b=4+Math.random()*3.5;        // 小 b：大概率直接坠入
+  else if(roll<0.47) b=7.5+Math.random()*3.5; // 中小 b：捕获 → 潮汐撕裂
+  else if(roll<0.72) b=11+Math.random()*4;     // 中大 b：捕获稳定轨道
+  else b=15+Math.random()*9;                  // 大 b：擦肩逃离
+  const ang=Math.random()*Math.PI*2;          // 随机入射方向
+  rogueLaunch(b, ang);
+}
+function rogueAutoTick(now, dt){
+  // 随机生成模式：一次一只；稳定/远离/消失后 10s 生成下一颗
+  const A=ROG.auto;
+  if(!A.enabled || !rogueOnChk) return;
+  // 死亡淡出动画推进（~0.8s，无卡顿）
+  if(ROG.dieT>0 && ROG.dieT<1){
+    ROG.dieT=Math.min(1, ROG.dieT+dt*1.25);
+    if(ROG.dieT>=1) ROG.debris=[];
+    if(A.pendingSpawn && ROG.dieT>=1){
+      A.pendingSpawn=false;
+      rogueLaunchRandom();
+    }
+    return;
+  }
+  // 跟踪当前状态持续时间
+  if(ROG.state!==A.lastState){ A.lastState=ROG.state; A.stateT=0; }
+  else A.stateT+=dt;
+  // 终结判定：坠入/逃离立即；撕裂等碎片落完；捕获稳定轨道展示 25s
+  const terminal =
+    ROG.state==='plunge' || ROG.state==='escape' ||
+    (ROG.state==='disrupting' && ((ROG.tide>=1 && ROG.debris.length===0) || A.stateT>30)) ||
+    (ROG.state==='captured' && A.stateT>25);
+  if(terminal && !A.waitUntil) A.waitUntil=now+10000;
+  if(A.waitUntil && now>=A.waitUntil){
+    A.waitUntil=0;
+    // 旧星体还在（稳定轨道/撕裂残骸）→ 先自毁淡出，动画完再生成
+    const stillThere=(ROG.state==='captured'||ROG.state==='disrupting') && ROG.dieT<1;
+    if(stillThere){ ROG.dieT=0.001; A.pendingSpawn=true; }
+    else rogueLaunchRandom();
+  }
 }
 function rogueEnergy(){
   const p=ROG.p, v=ROG.v;
@@ -1758,8 +1882,15 @@ function galStageKey(){
     if(sim.periDone) return 'galStMerging';
     return 'galStApproach';
   }
-  if(sim.periDone) return 'galStRecede';
-  return 'galStApproach';
+  // 非束缚轨道：按实时相对距离和径向速度判定，不预判最终结局
+  const sep=sim.separation();
+  if(sep<3) return 'galStEntangled';  // 近距离纠缠旋转中
+  const c1=sim.c1, c2=sim.c2;
+  const dx=c2.x-c1.x, dy=c2.y-c1.y, dz=c2.z-c1.z;
+  const dvx=c2.vx-c1.vx, dvy=c2.vy-c1.vy, dvz=c2.vz-c1.vz;
+  const rdot=(dx*dvx+dy*dvy+dz*dvz)/Math.max(sep,1e-6);
+  if(rdot>0) return 'galStRecede';    // 已拉开距离且在远离
+  return 'galStApproach';             // 还在接近
 }
 /* 星系核心世界坐标 */
 function galCoreWorld(i){
@@ -2205,7 +2336,10 @@ function camMove(dtWall){
 let sim=null, galPlaying=true, sysSpeed=2;
 let simTime=0, shipT=0, planetT=0, galAcc=0;
 const OMEGA_P=Math.pow(12,-1.5);          // 行星公转角速度
-const TD_FACTOR=Math.sqrt(1-3/12);        // 时间膨胀因子 dτ/dt
+// 时间膨胀因子 dτ/dt：严格遵循电影设定 —— 米勒星上 1 小时 = 远处 7 年
+// 7年 = 7×365×24 = 61320 小时，故 dτ/dt = 1/61320（Kip Thorne 为电影计算的近极端克尔黑洞值）
+const TD_MOVIE=61320;
+const TD_FACTOR=1/TD_MOVIE;
 let planetPos=[12,0,0];
 let diskOn=true, planetOn=true;
 let glowAmt=0.6;   // 解析式辉光强度（面板可调）
@@ -2232,6 +2366,18 @@ $('visMW').onchange=e=>{ showMW=e.target.checked; refreshGalaxyCube(); };
 $('visM31').onchange=e=>{ showM31=e.target.checked; refreshGalaxyCube(); };
 $('visStars').onchange=e=>{ showStars=e.target.checked; bgRenderCube(); };
 $('glow').oninput=e=>{ glowAmt=parseFloat(e.target.value); $('glowVal').textContent=glowAmt.toFixed(1); };
+// 背景星空密度/亮度
+let starDensity=1.0, starBright=1.0;
+$('starDensity').oninput=e=>{
+  starDensity=parseFloat(e.target.value);
+  $('starDensityVal').textContent=Math.round(starDensity*100)+'%';
+  bgRenderCube();
+};
+$('starBright').oninput=e=>{
+  starBright=parseFloat(e.target.value);
+  $('starBrightVal').textContent=starBright.toFixed(1);
+  bgRenderCube();
+};
 $('spin').oninput=e=>{ spinA=parseFloat(e.target.value); $('spinVal').textContent=spinA.toFixed(2); updateSpin(); };
 $('speed').onchange=e=>{ sysSpeed=parseFloat(e.target.value); };
 $('quality').onchange=e=>{
@@ -2273,8 +2419,10 @@ $('rogueB').oninput=e=>{
   rogueLaunch(b);
 };
 $('rogueLaunch').onclick=()=>rogueLaunch(parseFloat($('rogueB').value));
-let galLoop=true, simDoneAt=0;
-$('galLoop').onchange=e=>{ galLoop=e.target.checked; if(!galLoop) simDoneAt=0; };
+$('rogueAuto').onchange=e=>{
+  ROG.auto.enabled=e.target.checked;
+  if(!e.target.checked){ ROG.auto.waitUntil=0; ROG.auto.pendingSpawn=false; }
+};
 
 /* ---------------- toast ---------------- */
 let toastT=null;
@@ -2284,7 +2432,8 @@ function toast(msg){
   clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.display='none'; }, 2800);
 }
 
-$('tdFactor').textContent=TD_FACTOR.toFixed(3);
+$('tdFactor').textContent='1 : '+TD_MOVIE.toLocaleString('en-US');
+$('tdEquivV').textContent=(TD_MOVIE/3600).toFixed(1)+'h';
 
 function fmtClock(t){
   t=Math.max(0,Math.floor(t));
@@ -2325,8 +2474,9 @@ function frame(now){
 
   // 星系模拟推进：限步数 + 丢弃追不上的时间，防止掉帧滚雪崩；
   // 立方体重绘节流（背景演化慢，8fps 更新足够）
-  if(galPlaying && sim && !sim.done){
+  if(galPlaying && sim){
     galAcc+=dt;                       // 模拟时间流速与系统同步
+    // 演化完成后不停止、不重播，继续按物理发展到稳定状态；重播由用户手动触发
     const DT=0.016, MAXSTEPS=6;         // 大步长 + 少粒子，手机端单帧 <2ms
     let n=0;
     while(galAcc>=DT && n<MAXSTEPS){ sim.step(DT); galAcc-=DT; n++; }
@@ -2335,16 +2485,11 @@ function frame(now){
       bgUpdateGalaxy(sim);
       bgRenderCube();
     }
-  } else if(galPlaying && sim && sim.done && galLoop){
-    // 循环演示：终态停留 2 秒后自动重播
-    if(!simDoneAt) simDoneAt=now;
-    if(now-simDoneAt>2000){ simDoneAt=0; rebuildGalaxy(sim.impact); }
-  } else {
-    simDoneAt=0;
   }
 
   // 星际行星推进（独立时间加速）
   if(rogueOnChk) rogueStep(dtWall*ROG_WARP);
+  rogueAutoTick(now, dtWall);
   if(ROG.debris.length) rogueStepDebris(dtWall*ROG_WARP);
 
   // 相机
@@ -2377,12 +2522,9 @@ function frame(now){
     // rogueMarkerStat 已随 HTML 标记删除，状态只显示在控制面板
     if(sim){
       let st=sim.status();
-      if(sim.done && galLoop && galPlaying && simDoneAt)
-        st=t('finalState')+Math.max(1,Math.ceil((2000-(now-simDoneAt))/1000))+t('replayIn');
       $('galStatus').textContent=t(st);
       $('galProg').style.width=(sim.progress()*100).toFixed(1)+'%';
-      // 演完自动暂停；但循环演示开着时不断播，交给循环分支重播
-      if(sim.done && galPlaying && !galLoop){ galPlaying=false; refreshButtons(); }
+      // 演完不暂停、不重播，物理继续演化到稳定状态
     }
   }
 }
