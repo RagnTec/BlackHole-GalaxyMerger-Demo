@@ -243,8 +243,8 @@ body.orbitMode #udBtns{display:none}
       <b id="glowVal" style="min-width:2em;text-align:right">0.6</b>
     </div>
     <div class="row"><span data-i18n="spinLabel">黑洞自旋 a*</span>
-      <input type="range" id="spin" min="0" max="0.98" step="0.01" value="0" style="flex:1">
-      <b id="spinVal" style="min-width:2.8em;text-align:right">0.00</b>
+      <input type="range" id="spin" min="0" max="0.98" step="0.01" value="0.98" style="flex:1">
+      <b id="spinVal" style="min-width:2.8em;text-align:right">0.98</b>
     </div>
     <div class="row"><span data-i18n="qualityLabel">渲染分辨率</span>
       <select id="quality">
@@ -2140,7 +2140,7 @@ function ppRender(time){
 /* ---------------- 黑洞自旋 → ISCO（Bardeen 公式） ----------------
    a*=0 → 6M（退化为当前行为）；a*→1 → 1M。盘内缘/温度分布/亮环跟随，
    光子积分仍用史瓦西（Kerr 测地线为下一步里程碑，此处如实标注）。 */
-let spinA=0, riscoC=6, fmaxC=2.6226e-4;
+let spinA=0.98, riscoC=6, fmaxC=2.6226e-4;  // 默认近极端自旋，还原电影卡冈图雅
 function riscoOf(a){
   a=Math.min(Math.max(a,0),0.998);
   const z1=1+Math.cbrt(1-a*a)*(Math.cbrt(1+a)+Math.cbrt(1-a));
